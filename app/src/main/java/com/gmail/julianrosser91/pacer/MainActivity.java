@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView mTextCurrentLocation;
     private TextView mTextLastUpdated;
     private TextView mTextListenerState;
+    private TextView mTextExerciseNodeCount;
     private Button mButtonStart;
     private Button mButtonStop;
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
     private long mLastUpdateTime;
+    private TrackedRoute trackedRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,17 +73,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         setSupportActionBar(toolbar);
         setUpViews();
+        setupLocationTracker();
         setUpLocationListener();
     }
 
     protected void onStart() {
-        mGoogleApiClient.connect();
+        startTrackingLocation();
         super.onStart();
     }
 
     protected void onStop() {
-        mGoogleApiClient.disconnect();
-        updateListenerStateText(LocationListenerState.DISCONNECTED);
+        stopTrackingLocation();
         super.onStop();
     }
 
@@ -88,10 +91,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mTextCurrentLocation = (TextView) findViewById(R.id.text_current_location);
         mTextLastUpdated = (TextView) findViewById(R.id.text_last_updated);
         mTextListenerState = (TextView) findViewById(R.id.text_listener_state);
+        mTextExerciseNodeCount = (TextView) findViewById(R.id.text_exercise_node_count);
         mButtonStart = (Button) findViewById(R.id.button_start_tracking);
         mButtonStart.setOnClickListener(this);
         mButtonStop = (Button) findViewById(R.id.button_stop_tracking);
         mButtonStop.setOnClickListener(this);
+    }
+
+    private void setupLocationTracker() {
+        trackedRoute = new TrackedRoute();
     }
 
     private void setUpLocationListener() {
@@ -137,14 +145,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onClick(View v) {
 
         if (v.getId() == R.id.button_start_tracking) {
-            if (! mGoogleApiClient.isConnected() && ! mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
-            }
+            startTrackingLocation();
         } else if (v.getId() == R.id.button_stop_tracking) {
-            if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.disconnect();
-                updateListenerStateText(LocationListenerState.DISCONNECTED);
-            }
+            stopTrackingLocation();
+        }
+    }
+
+    public void startTrackingLocation() {
+        if (! mGoogleApiClient.isConnected() && ! mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    public void stopTrackingLocation() {
+        if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.disconnect();
+            updateListenerStateText(LocationListenerState.DISCONNECTED);
         }
     }
 
@@ -197,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void handleUpdatedLocation(Location location) {
+        trackedRoute.addLocation(location);
         mCurrentLocation = location;
         mLastUpdateTime = new Date().getTime();
         updateViewsWithLocation(location);
@@ -205,6 +222,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void updateViewsWithLocation(Location location) {
         mTextCurrentLocation.setText(location.getLatitude() + " | " + location.getLongitude());
         mTextLastUpdated.setText(DATE_FORMAT_LAST_UPDATED.format(location.getTime()));
+        mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+    }
+
+    private void updateTrackedExercise(Location location) {
+        // todo - display info
     }
 
     @Override

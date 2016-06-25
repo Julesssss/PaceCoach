@@ -38,10 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_buttons"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="state"
-        android:textStyle="bold"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_current_location"
@@ -60,6 +60,16 @@
         android:layout_below="@+id/text_current_location"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
+        android:text="updated"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_exercise_node_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_last_updated"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
         android:text="updated"
         android:textSize="15sp" />
 
