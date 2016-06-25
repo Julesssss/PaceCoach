@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             * UPDATE_INTERVAL_IN_SECONDS;
     private static final int FASTEST_INTERVAL_IN_MILLISECONDS = 100;
     private final static int LOCATION_PERMISSION_REQUEST = 100;
-    final static public SimpleDateFormat DATE_FORMAT_LAST_UPDATED = new SimpleDateFormat("hh:m.s");
+    final static public SimpleDateFormat DATE_FORMAT_LAST_UPDATED = new SimpleDateFormat("hh:mm.ss");
 
     // Views
     private TextView mTextCurrentLocation;
@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     @Override
                     public void onLocationChanged(Location location) {
                         handleUpdatedLocation(location);
+                        Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
                     }
                 });
     }
@@ -198,12 +199,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void handleUpdatedLocation(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = new Date().getTime();
+        updateViewsWithLocation(location);
+    }
 
-        Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
-        System.out.print("(S) new loc: " + location.getLatitude() + " | " + location.getLongitude());
-
+    private void updateViewsWithLocation(Location location) {
         mTextCurrentLocation.setText(location.getLatitude() + " | " + location.getLongitude());
-        mTextLastUpdated.setText(DATE_FORMAT_LAST_UPDATED.format(new Date()));
+        mTextLastUpdated.setText(DATE_FORMAT_LAST_UPDATED.format(location.getTime()));
     }
 
     @Override
