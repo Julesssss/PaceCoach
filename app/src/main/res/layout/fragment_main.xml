@@ -18,11 +18,23 @@
         android:text="Start - Stop" />
 
     <TextView
+        android:id="@+id/text_current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonStartStop"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Pace: :o!" />
+        android:text="Pace: :o!"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/text_last_updated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_current_location"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:text="updated"
+        android:textSize="15sp" />
 
 </RelativeLayout>
