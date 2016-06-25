@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer;
+package com.gmail.julianrosser91.pacer.model;
 
 import android.location.Location;
 
