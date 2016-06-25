@@ -50,7 +50,7 @@
         android:layout_below="@+id/text_listener_state"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
-        android:text="Pace: :o!"
+        android:text="currentLocation"
         android:textSize="20sp" />
 
     <TextView
@@ -60,7 +60,7 @@
         android:layout_below="@+id/text_current_location"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
-        android:text="updated"
+        android:text="lastUpdated"
         android:textSize="15sp" />
 
     <TextView
@@ -70,7 +70,7 @@
         android:layout_below="@+id/text_last_updated"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="updated"
+        android:text="nodes"
         android:textSize="15sp" />
 
 </RelativeLayout>

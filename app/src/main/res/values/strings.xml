@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Pacer</string>
     <string name="action_settings">Settings</string>
+    <string name="listening">LISTENING</string>
+    <string name="disconnected">DISCONNECTED</string>
+    <string name="error">ERROR</string>
 </resources>

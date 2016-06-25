@@ -17,36 +17,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.gmail.julianrosser91.pacer.model.TrackedRoute;
+import com.gmail.julianrosser91.pacer.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    /**
-     * Enum for possible location listener states
-     */
-    public enum LocationListenerState {
-        CONNECTED,
-        CONNECTING,
-        DISCONNECTED,
-        ERROR
-    }
-
-    // Constants
-    private static final int MILLISECONDS_PER_SECOND = 1000;
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 1;
-    private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND
-            * UPDATE_INTERVAL_IN_SECONDS;
-    private static final int FASTEST_INTERVAL_IN_MILLISECONDS = 100;
-    private final static int LOCATION_PERMISSION_REQUEST = 100;
-    final static public SimpleDateFormat DATE_FORMAT_LAST_UPDATED = new SimpleDateFormat("hh:mm.ss");
+    private static final String REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY";
+    private static final String LOCATION_KEY = "LOCATION_KEY";
+    private static final String TRACKED_ROUTE_KEY = "TRACKED_ROUTE_KEY";
+    private static final String LAST_UPDATED_TIME_MILLIS_KEY = "LAST_UPDATED_TIME_MILLIS_KEY";
+    private static final String LAST_UPDATED_TIME_STRING_KEY = "LAST_UPDATED_TIME_STRING_KEY";
+    // Object references
+    public Context mContext;
+    // Variables
+    private boolean mRequestingLocationUpdates;
+    private String mLastUpdatedTimeString;
+    private long mLastUpdatedTimeMillis;
+    private Location mCurrentLocation;
 
     // Views
     private TextView mTextCurrentLocation;
@@ -55,13 +49,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView mTextExerciseNodeCount;
     private Button mButtonStart;
     private Button mButtonStop;
-
-    // Objects
-    public Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
-    private long mLastUpdateTime;
     private TrackedRoute trackedRoute;
 
     @Override
@@ -73,12 +62,72 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         setSupportActionBar(toolbar);
         setUpViews();
-        setupLocationTracker();
+        updateValuesFromBundle(savedInstanceState);
         setUpLocationListener();
     }
 
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY,
+                mRequestingLocationUpdates);
+        savedInstanceState.putParcelable(TRACKED_ROUTE_KEY, trackedRoute);
+        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
+        savedInstanceState.putLong(LAST_UPDATED_TIME_MILLIS_KEY, mLastUpdatedTimeMillis); // find
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdatedTimeString);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            trackedRoute = new TrackedRoute();
+        } else {
+            // Update the TrackedRoute Array of nodes
+            if (savedInstanceState.keySet().contains(TRACKED_ROUTE_KEY)) {
+                trackedRoute = savedInstanceState.getParcelable(TRACKED_ROUTE_KEY);
+            }
+            // Update the value of mRequestingLocationUpdates from the Bundle, and
+            // make sure that the Start Updates and Stop Updates buttons are
+            // correctly enabled or disabled.
+            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+                mRequestingLocationUpdates = savedInstanceState.getBoolean(
+                        REQUESTING_LOCATION_UPDATES_KEY);
+                // setButtonsEnabledState(); // todo
+            }
+
+            // Update the value of mCurrentLocation from the Bundle
+            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
+                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+            }
+
+            // Update the value of mLastUpdatedTimeMillis
+            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_MILLIS_KEY)) {
+                mLastUpdatedTimeMillis = savedInstanceState.getLong(
+                        LAST_UPDATED_TIME_MILLIS_KEY);
+            }
+            // Update the value of mLastUpdateTimeString
+            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
+                mLastUpdatedTimeString = savedInstanceState.getString(
+                        LAST_UPDATED_TIME_STRING_KEY);
+            }
+            updateUI();
+        }
+    }
+
+    private void updateUI() {
+        if (mRequestingLocationUpdates) {
+            updateListenerStateText(LocationListenerState.LISTENING);
+        } else {
+            updateListenerStateText(LocationListenerState.DISCONNECTED);
+        }
+        mTextCurrentLocation.setText(mCurrentLocation.getLatitude() + " | " + mCurrentLocation.getLongitude());
+        mTextLastUpdated.setText(mLastUpdatedTimeString);
+        mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+
+    }
+
     protected void onStart() {
-        startTrackingLocation();
+        if (mRequestingLocationUpdates) {
+            startTrackingLocation();
+        }
         super.onStart();
     }
 
@@ -113,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     protected LocationRequest createLocationRequest() {
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setInterval(Constants.UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(Constants.FASTEST_INTERVAL_IN_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return mLocationRequest;
     }
@@ -147,49 +196,50 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (v.getId() == R.id.button_start_tracking) {
             startTrackingLocation();
         } else if (v.getId() == R.id.button_stop_tracking) {
+            mRequestingLocationUpdates = false;
             stopTrackingLocation();
         }
     }
 
     public void startTrackingLocation() {
-        if (! mGoogleApiClient.isConnected() && ! mGoogleApiClient.isConnecting()) {
+        // if not connecting, connect
+        if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
+        } else if (mGoogleApiClient.isConnected()) {
+            updateListenerStateText(LocationListenerState.LISTENING);
+            startLocationUpdates();
         }
     }
 
     public void stopTrackingLocation() {
         if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.disconnect();
-            updateListenerStateText(LocationListenerState.DISCONNECTED);
         }
+        updateListenerStateText(LocationListenerState.DISCONNECTED);
     }
 
     public void updateListenerStateText(LocationListenerState state) {
         switch (state) {
-            case CONNECTED:
-                mTextListenerState.setText("CONNECTED");
+            case LISTENING:
+                mTextListenerState.setText(R.string.listening);
                 mTextListenerState.setTextColor(getResources().getColor(R.color.green));
                 return;
             case DISCONNECTED:
-                mTextListenerState.setText("DISCONNECTED");
+                mTextListenerState.setText(R.string.disconnected);
                 mTextListenerState.setTextColor(getResources().getColor(R.color.orange));
                 return;
             default:
-                mTextListenerState.setText("ERROR");
+                mTextListenerState.setText(R.string.error);
                 mTextListenerState.setTextColor(getResources().getColor(R.color.red));
-
         }
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(getClass().getSimpleName(), "onGoogleAPiConnected");
-
-        updateListenerStateText(LocationListenerState.CONNECTED);
-
-//        if (mRequestingLocationUpdates) {
+        mRequestingLocationUpdates = true;
+        updateListenerStateText(LocationListenerState.LISTENING);
         startLocationUpdates();
-//        }
     }
 
     protected void startLocationUpdates() {
@@ -215,18 +265,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void handleUpdatedLocation(Location location) {
         trackedRoute.addLocation(location);
         mCurrentLocation = location;
-        mLastUpdateTime = new Date().getTime();
+        mLastUpdatedTimeMillis = new Date().getTime();
         updateViewsWithLocation(location);
     }
 
     private void updateViewsWithLocation(Location location) {
         mTextCurrentLocation.setText(location.getLatitude() + " | " + location.getLongitude());
-        mTextLastUpdated.setText(DATE_FORMAT_LAST_UPDATED.format(location.getTime()));
+        mLastUpdatedTimeString = Constants.DATE_FORMAT_LAST_UPDATED.format(location.getTime());
+        mTextLastUpdated.setText(mLastUpdatedTimeString);
         mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
-    }
-
-    private void updateTrackedExercise(Location location) {
-        // todo - display info
     }
 
     @Override
@@ -242,6 +289,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void askForLocationPermission() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                LOCATION_PERMISSION_REQUEST);
+                Constants.LOCATION_PERMISSION_REQUEST);
+    }
+
+    /**
+     * Enum for possible location listener states
+     */
+    public enum LocationListenerState {
+        LISTENING,
+        DISCONNECTED
     }
 }
