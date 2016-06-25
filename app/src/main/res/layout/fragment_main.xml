@@ -9,21 +9,47 @@
     tools:context=".PaceFragment"
     tools:showIn="@layout/activity_main">
 
-    <Button
-        android:id="@+id/buttonStartStop"
+
+    <LinearLayout
+        android:id="@+id/layout_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/button_start_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="START" />
+
+        <Button
+            android:id="@+id/button_stop_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="STOP" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_listener_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_buttons"
         android:layout_centerHorizontal="true"
-        android:onClick="buttonStartStop"
-        android:text="Start - Stop" />
+        android:layout_marginTop="32dp"
+        android:text="state"
+        android:textStyle="bold"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/text_current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonStartStop"
+        android:layout_below="@+id/text_listener_state"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="4dp"
         android:text="Pace: :o!"
         android:textSize="20sp" />
 
