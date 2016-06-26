@@ -2,11 +2,15 @@ package com.gmail.julianrosser91.pacer;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.model.TrackedRoute;
 import com.gmail.julianrosser91.pacer.utils.Constants;
@@ -113,14 +118,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void updateUI() {
-        if (mRequestingLocationUpdates) {
-            updateListenerStateText(LocationListenerState.LISTENING);
-        } else {
-            updateListenerStateText(LocationListenerState.DISCONNECTED);
+//        if (mRequestingLocationUpdates) {
+//            updateListenerStateText(LocationListenerState.LISTENING);
+//        } else {
+//            updateListenerStateText(LocationListenerState.DISCONNECTED);
+//        }
+        if (mCurrentLocation != null) {
+            mTextCurrentLocation.setText(mCurrentLocation.getLatitude() + " | " + mCurrentLocation.getLongitude());
         }
-        mTextCurrentLocation.setText(mCurrentLocation.getLatitude() + " | " + mCurrentLocation.getLongitude());
-        mTextLastUpdated.setText(mLastUpdatedTimeString);
-        mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+        if (mLastUpdatedTimeString != null && ! mLastUpdatedTimeString.contains("")) {
+            mTextLastUpdated.setText(mLastUpdatedTimeString);
+        }
+        if (trackedRoute != null) {
+            mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+        }
 
     }
 
@@ -147,9 +158,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mButtonStop.setOnClickListener(this);
     }
 
-    private void setupLocationTracker() {
-        trackedRoute = new TrackedRoute();
-    }
 
     private void setUpLocationListener() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -184,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(this, "DIST: " + trackedRoute.getDistanceBetweenLastTwoNodes(), Toast.LENGTH_SHORT).show();
+//            trackedRoute.distanceBetweenNodes(trackedRoute.getLocationNodes().get(0), trackedRoute.getLocationNodes().get(0));
             return true;
         }
 
@@ -206,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
         } else if (mGoogleApiClient.isConnected()) {
-            updateListenerStateText(LocationListenerState.LISTENING);
             startLocationUpdates();
         }
     }
@@ -237,8 +246,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(getClass().getSimpleName(), "onGoogleAPiConnected");
-        mRequestingLocationUpdates = true;
-        updateListenerStateText(LocationListenerState.LISTENING);
         startLocationUpdates();
     }
 
@@ -251,7 +258,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             askForLocationPermission();
             return;
         }
-
+        // GPS enabled check
+        if (! isGPSEnabled()) {
+            Snackbar.make(mTextCurrentLocation, R.string.gps_disabled, Snackbar.LENGTH_LONG).setAction(getString(R.string.enable), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showGpsPrompt();
+                }
+            }).show();
+            return;
+        }
+        // Start listening for location updates
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener() {
                     @Override
@@ -260,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
                     }
                 });
+        mRequestingLocationUpdates = true;
+        updateListenerStateText(LocationListenerState.LISTENING);
     }
 
     private void handleUpdatedLocation(Location location) {
@@ -267,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mCurrentLocation = location;
         mLastUpdatedTimeMillis = new Date().getTime();
         updateViewsWithLocation(location);
+        Toast.makeText(this, "DIST: " + trackedRoute.getDistanceBetweenLastTwoNodes(), Toast.LENGTH_SHORT).show();
     }
 
     private void updateViewsWithLocation(Location location) {
@@ -290,6 +310,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 Constants.LOCATION_PERMISSION_REQUEST);
+    }
+
+    public boolean isGPSEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public void showGpsPrompt() {
+        //prompt user to enable gps
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
     }
 
     /**

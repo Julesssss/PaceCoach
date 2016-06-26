@@ -14,6 +14,22 @@ public class TrackedRoute implements Parcelable {
         this.locationNodes = new ArrayList<>();
     }
 
+    protected TrackedRoute(Parcel in) {
+        locationNodes = in.createTypedArrayList(Location.CREATOR);
+    }
+
+    public static final Creator<TrackedRoute> CREATOR = new Creator<TrackedRoute>() {
+        @Override
+        public TrackedRoute createFromParcel(Parcel in) {
+            return new TrackedRoute(in);
+        }
+
+        @Override
+        public TrackedRoute[] newArray(int size) {
+            return new TrackedRoute[size];
+        }
+    };
+
     public ArrayList<Location> getLocationNodes() {
         return locationNodes;
     }
@@ -37,6 +53,22 @@ public class TrackedRoute implements Parcelable {
     }
 
     // todo - getDistanceBetweenNodes()
+
+    public float getDistanceBetweenLastTwoNodes() {
+        if (locationNodes.size() > 1) {
+            Location locA = locationNodes.get(locationNodes.size() - 2);
+            Location locB = locationNodes.get(locationNodes.size() - 1);
+            return distanceBetweenNodes(locA, locB)[0];
+        }
+        return 111f;
+    }
+
+    public float[] distanceBetweenNodes(Location locA, Location locB) {
+        float[] results = new float[3];
+        Location.distanceBetween(locA.getLatitude(), locA.getLongitude(), locB.getLatitude(),
+                locB.getLongitude(), results);
+        return results;
+    }
 
     // todo - getTotalDistance()
 

@@ -4,4 +4,6 @@
     <string name="listening">LISTENING</string>
     <string name="disconnected">DISCONNECTED</string>
     <string name="error">ERROR</string>
+    <string name="enable">ENABLE</string>
+    <string name="gps_disabled">GPS is disabled</string>
 </resources>
