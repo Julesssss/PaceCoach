@@ -29,6 +29,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private TrackedRoute trackedRoute;
+    private TextView mTextSplitTime;
+    private TextView mTextSplitDistance;
+    private TextView mTextTotalTime;
+    private TextView mTextTotalDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mTextLastUpdated = (TextView) findViewById(R.id.text_last_updated);
         mTextListenerState = (TextView) findViewById(R.id.text_listener_state);
         mTextExerciseNodeCount = (TextView) findViewById(R.id.text_exercise_node_count);
+
+        mTextSplitTime = (TextView) findViewById(R.id.text_split_time);
+        mTextSplitDistance = (TextView) findViewById(R.id.text_split_distance);
+        mTextTotalTime = (TextView) findViewById(R.id.text_total_time);
+        mTextTotalDistance = (TextView) findViewById(R.id.text_total_distance);
+
         mButtonStart = (Button) findViewById(R.id.button_start_tracking);
         mButtonStart.setOnClickListener(this);
         mButtonStop = (Button) findViewById(R.id.button_stop_tracking);
@@ -192,12 +203,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Toast.makeText(this, "DIST: " + trackedRoute.getDistanceBetweenLastTwoNodes(), Toast.LENGTH_SHORT).show();
-//            trackedRoute.distanceBetweenNodes(trackedRoute.getLocationNodes().get(0), trackedRoute.getLocationNodes().get(0));
+            dumpGpsLog();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void dumpGpsLog() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Location l : trackedRoute.getLocationNodes()) {
+            stringBuilder.append(l.getLatitude() + ", " + l.getLongitude() + "\n");
+        }
+        Log.i(getClass().getSimpleName(), stringBuilder.toString());
     }
 
     @Override
@@ -274,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     @Override
                     public void onLocationChanged(Location location) {
                         handleUpdatedLocation(location);
-                        Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
+//                        Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
                     }
                 });
         mRequestingLocationUpdates = true;
@@ -286,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mCurrentLocation = location;
         mLastUpdatedTimeMillis = new Date().getTime();
         updateViewsWithLocation(location);
-        Toast.makeText(this, "DIST: " + trackedRoute.getDistanceBetweenLastTwoNodes(), Toast.LENGTH_SHORT).show();
+        updateSplitsWithLocation();
     }
 
     private void updateViewsWithLocation(Location location) {
@@ -294,6 +312,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLastUpdatedTimeString = Constants.DATE_FORMAT_LAST_UPDATED.format(location.getTime());
         mTextLastUpdated.setText(mLastUpdatedTimeString);
         mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+    }
+
+    private void updateSplitsWithLocation() {
+        if (trackedRoute.getDistanceBetweenLastTwoNodes() > 0) {
+            mTextSplitTime.setText(Constants.DATE_FORMAT_SPLIT_TIME.format(trackedRoute.getTimeBetweenLastTwoNodes()));
+            mTextTotalTime.setText(Constants.DATE_FORMAT_SPLIT_TIME.format(trackedRoute.getTotalTimeInMillis()));
+            mTextSplitDistance.setText("" + trackedRoute.getDistanceBetweenLastTwoNodes() + "m");
+            mTextTotalDistance.setText("" + trackedRoute.getTotalDistance() + "m");
+        }
     }
 
     @Override
