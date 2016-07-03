@@ -37,6 +37,31 @@ public class TrackedRoute implements Parcelable {
         return totalDistance;
     }
 
+    // get TIME per KM
+    public String getTotalPace() {
+        float millis = getTotalTimeInMillis();
+        float seconds = millis / 1000;
+        float km = totalDistance / 1000;
+        float secondsPerKm = seconds / km;
+        float minutesPerKm = secondsPerKm / 60;
+
+        float kmPerSecond = km / seconds;
+        float kmPerMinute = kmPerSecond * 60;
+        float kmPerHour = kmPerMinute * 60;
+
+        Log.i(getClass().getSimpleName(), "\n\nTotal km " + km);
+        Log.i(getClass().getSimpleName(), "Total seconds: " + getTotalTimeInMillis() / 1000);
+
+
+        Log.i(getClass().getSimpleName(), "sec/km: " + secondsPerKm);
+        Log.i(getClass().getSimpleName(), "min/km: " + minutesPerKm);
+        Log.i(getClass().getSimpleName(), "km/sec: " + kmPerSecond * 60);
+        Log.i(getClass().getSimpleName(), "km/min: " + kmPerMinute);
+        Log.i(getClass().getSimpleName(), "km/hour: " + kmPerHour);
+
+        return String.valueOf(secondsPerKm);
+    }
+
     public long getTotalTimeInMillis() {
         return endTimeMillis - startTimeMillis;
     }
@@ -57,11 +82,16 @@ public class TrackedRoute implements Parcelable {
         }
         locationNodes.add(location);
         addLastNodeToTotals(location);
+        getTotalPace();
 
     }
 
     public int getSize() {
         return locationNodes.size();
+    }
+
+    public void resetData() {
+        locationNodes = new ArrayList<>();
     }
 
     public float getDistanceBetweenLastTwoNodes() {

@@ -75,6 +75,7 @@
         android:textSize="15sp" />
 
     <LinearLayout
+        android:id="@+id/layoutSplits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_exercise_node_count"
@@ -155,5 +156,13 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/splitRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layoutSplits"
+        android:layout_marginTop="16dp" />
+
 
 </RelativeLayout>

@@ -10,3 +10,4 @@ Pace Coach lets you track your pace whole running or cycling.
 TODO:
 - Create class structure for holding nodes and runs.
 - Don't add node if distance is 0.0m
+- Move to Service class

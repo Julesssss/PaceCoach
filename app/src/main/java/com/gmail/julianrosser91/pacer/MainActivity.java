@@ -13,12 +13,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,19 +32,23 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, IntentCallback {
 
     private static final String REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY";
     private static final String LOCATION_KEY = "LOCATION_KEY";
     private static final String TRACKED_ROUTE_KEY = "TRACKED_ROUTE_KEY";
     private static final String LAST_UPDATED_TIME_MILLIS_KEY = "LAST_UPDATED_TIME_MILLIS_KEY";
     private static final String LAST_UPDATED_TIME_STRING_KEY = "LAST_UPDATED_TIME_STRING_KEY";
+
     // Object references
     public Context mContext;
+    private TrackedRoute trackedRoute;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
     // Variables
     private boolean mRequestingLocationUpdates;
     private String mLastUpdatedTimeString;
@@ -55,13 +62,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView mTextExerciseNodeCount;
     private Button mButtonStart;
     private Button mButtonStop;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    private TrackedRoute trackedRoute;
     private TextView mTextSplitTime;
     private TextView mTextSplitDistance;
     private TextView mTextTotalTime;
     private TextView mTextTotalDistance;
+    private RecyclerView mRecyclerViewSplits;
+    private SplitsRecyclerAdapter mSplitsRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mCurrentLocation != null) {
             mTextCurrentLocation.setText(mCurrentLocation.getLatitude() + " | " + mCurrentLocation.getLongitude());
         }
-        if (mLastUpdatedTimeString != null && ! mLastUpdatedTimeString.contains("")) {
+        if (mLastUpdatedTimeString != null && !mLastUpdatedTimeString.contains("")) {
             mTextLastUpdated.setText(mLastUpdatedTimeString);
         }
         if (trackedRoute != null) {
@@ -167,8 +173,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mButtonStart.setOnClickListener(this);
         mButtonStop = (Button) findViewById(R.id.button_stop_tracking);
         mButtonStop.setOnClickListener(this);
+
+        setUpRecyclerView();
     }
 
+    private void setUpRecyclerView() {
+        mRecyclerViewSplits = (RecyclerView) findViewById(R.id.splitRecyclerView);
+        mRecyclerViewSplits.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, true));
+        mSplitsRecyclerAdapter = new SplitsRecyclerAdapter(this);
+        mRecyclerViewSplits.setAdapter(mSplitsRecyclerAdapter);
+    }
 
     private void setUpLocationListener() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -202,8 +216,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_reset_route) {
+            trackedRoute.resetData();
+            return true;
+        } else if (id == R.id.action_dump_log) {
             dumpGpsLog();
+            return true;
+        } else if (id == R.id.action_settings) {
             return true;
         }
 
@@ -277,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
         // GPS enabled check
-        if (! isGPSEnabled()) {
+        if (!isGPSEnabled()) {
             Snackbar.make(mTextCurrentLocation, R.string.gps_disabled, Snackbar.LENGTH_LONG).setAction(getString(R.string.enable), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -305,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLastUpdatedTimeMillis = new Date().getTime();
         updateViewsWithLocation(location);
         updateSplitsWithLocation();
+        mSplitsRecyclerAdapter.addSplit(trackedRoute);
     }
 
     private void updateViewsWithLocation(Location location) {
@@ -348,6 +368,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //prompt user to enable gps
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
+    }
+
+    // SplitsRecyclerAdapter intent callback
+    @Override
+    public void onIntentReceived(Intent chatIntent) {
+        // Start Activity
+        Toast.makeText(this, "intentClicked", Toast.LENGTH_SHORT).show();
     }
 
     /**
