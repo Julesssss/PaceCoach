@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private TextView mTextTotalDistance;
     private RecyclerView mRecyclerViewSplits;
     private SplitsRecyclerAdapter mSplitsRecyclerAdapter;
+    private TextView mTextKmph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mTextLastUpdated = (TextView) findViewById(R.id.text_last_updated);
         mTextListenerState = (TextView) findViewById(R.id.text_listener_state);
         mTextExerciseNodeCount = (TextView) findViewById(R.id.text_exercise_node_count);
+        mTextKmph = (TextView) findViewById(R.id.text_kmph);
 
         mTextSplitTime = (TextView) findViewById(R.id.text_split_time);
         mTextSplitDistance = (TextView) findViewById(R.id.text_split_distance);
@@ -218,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_reset_route) {
             trackedRoute.resetData();
+            mSplitsRecyclerAdapter.clearData();
             return true;
         } else if (id == R.id.action_dump_log) {
             dumpGpsLog();
@@ -319,12 +322,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void handleUpdatedLocation(Location location) {
-        trackedRoute.addLocation(location);
-        mCurrentLocation = location;
-        mLastUpdatedTimeMillis = new Date().getTime();
-        updateViewsWithLocation(location);
-        updateSplitsWithLocation();
-        mSplitsRecyclerAdapter.addSplit(trackedRoute);
+//        Location lastLocation = trackedRoute.getLastLocation();
+//
+//        if (lastLocation == null) {
+            trackedRoute.addLocation(location);
+            mCurrentLocation = location;
+            mLastUpdatedTimeMillis = new Date().getTime();
+            updateViewsWithLocation(location);
+            updateSplitsWithLocation();
+            mSplitsRecyclerAdapter.addSplit(trackedRoute);
+//        } else if (lastLocation.distanceTo(location) > 10) {
+//            trackedRoute.addLocation(location);
+//            mCurrentLocation = location;
+//            mLastUpdatedTimeMillis = new Date().getTime();
+//            updateViewsWithLocation(location);
+//            updateSplitsWithLocation();
+//            mSplitsRecyclerAdapter.addSplit(trackedRoute);
+//        }
+
     }
 
     private void updateViewsWithLocation(Location location) {
@@ -332,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLastUpdatedTimeString = Constants.DATE_FORMAT_LAST_UPDATED.format(location.getTime());
         mTextLastUpdated.setText(mLastUpdatedTimeString);
         mTextExerciseNodeCount.setText("Nodes: " + trackedRoute.getSize());
+        mTextKmph.setText("" + trackedRoute.getKmphFromLastVector() + " km/h");
     }
 
     private void updateSplitsWithLocation() {
@@ -375,6 +391,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onIntentReceived(Intent chatIntent) {
         // Start Activity
         Toast.makeText(this, "intentClicked", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onSplitAdded() {
+        int firstPosition = mSplitsRecyclerAdapter.getItemCount()-1;
+        if (firstPosition < 0) firstPosition = 0;
+        mRecyclerViewSplits.smoothScrollToPosition(firstPosition);
     }
 
     /**

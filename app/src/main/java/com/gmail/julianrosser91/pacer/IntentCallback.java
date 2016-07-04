@@ -6,4 +6,6 @@ import java.io.Serializable;
 
 public interface IntentCallback {
     void onIntentReceived(Intent chatIntent);
+
+    void onSplitAdded();
 }

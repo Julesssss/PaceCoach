@@ -50,6 +50,11 @@ public class SplitsRecyclerAdapter extends RecyclerView.Adapter<SplitsRecyclerAd
     }
     public void addSplit(TrackedRoute split) {
         this.splits.add(split);
+        mCallback.onSplitAdded();
+    }
+
+    public void clearData() {
+        this.splits.clear();
     }
 
     @Override

@@ -74,11 +74,22 @@
         android:text="total nodes"
         android:textSize="15sp" />
 
+    <TextView
+        android:id="@+id/text_kmph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_exercise_node_count"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="\? km/h"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:id="@+id/layoutSplits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_exercise_node_count"
+        android:layout_below="@id/text_kmph"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal">
 

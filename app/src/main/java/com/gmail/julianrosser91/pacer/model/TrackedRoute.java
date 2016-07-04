@@ -10,15 +10,29 @@ import java.util.Date;
 
 public class TrackedRoute implements Parcelable {
 
+    public static final Creator<TrackedRoute> CREATOR = new Creator<TrackedRoute>() {
+        @Override
+        public TrackedRoute createFromParcel(Parcel in) {
+            return new TrackedRoute(in);
+        }
+
+        @Override
+        public TrackedRoute[] newArray(int size) {
+            return new TrackedRoute[size];
+        }
+    };
     private ArrayList<Location> locationNodes;
     private float totalDistance;
     private long startTimeMillis;
     private long endTimeMillis;
 
-
     public TrackedRoute() {
         this.locationNodes = new ArrayList<>();
         startTimeMillis = new Date().getTime();
+    }
+
+    protected TrackedRoute(Parcel in) {
+        locationNodes = in.createTypedArrayList(Location.CREATOR);
     }
 
     public ArrayList<Location> getLocationNodes() {
@@ -37,27 +51,52 @@ public class TrackedRoute implements Parcelable {
         return totalDistance;
     }
 
-    // get TIME per KM
+    public float getKmphFromLastVector() {
+        if (locationNodes.size() > 1) {
+            Location locA = locationNodes.get(locationNodes.size() - 1);
+            Location locB = locationNodes.get(locationNodes.size() - 2);
+            float millis = locA.getTime() - locB.getTime();
+            float meters = getDistanceBetweenLastTwoNodes();
+
+            return getKmPerHour(millis, meters);
+        } else {
+            return 0;
+        }
+    }
+
+    public float getKmPerHour(float millis, float meters) {
+        float seconds = millis / 1000;
+        float km = meters / 1000;
+        float kmPerSecond = km / seconds;
+        float kmPerMinute = kmPerSecond * 60;
+
+        Log.i(getClass().getSimpleName(), "km/hour: " + kmPerMinute + "\n\n");
+
+        return kmPerMinute * 60;
+    }
+
+    // get total pace
     public String getTotalPace() {
         float millis = getTotalTimeInMillis();
         float seconds = millis / 1000;
         float km = totalDistance / 1000;
         float secondsPerKm = seconds / km;
+//
+//        float kmPerSecond = km / seconds;
+
+
         float minutesPerKm = secondsPerKm / 60;
 
         float kmPerSecond = km / seconds;
+
         float kmPerMinute = kmPerSecond * 60;
         float kmPerHour = kmPerMinute * 60;
 
         Log.i(getClass().getSimpleName(), "\n\nTotal km " + km);
         Log.i(getClass().getSimpleName(), "Total seconds: " + getTotalTimeInMillis() / 1000);
 
-
-        Log.i(getClass().getSimpleName(), "sec/km: " + secondsPerKm);
+//        Log.i(getClass().getSimpleName(), "sec/km: " + secondsPerKm);
         Log.i(getClass().getSimpleName(), "min/km: " + minutesPerKm);
-        Log.i(getClass().getSimpleName(), "km/sec: " + kmPerSecond * 60);
-        Log.i(getClass().getSimpleName(), "km/min: " + kmPerMinute);
-        Log.i(getClass().getSimpleName(), "km/hour: " + kmPerHour);
 
         return String.valueOf(secondsPerKm);
     }
@@ -66,14 +105,13 @@ public class TrackedRoute implements Parcelable {
         return endTimeMillis - startTimeMillis;
     }
 
-    private void addLastNodeToTotals(Location location) {
-        endTimeMillis = location.getTime();
+    private void addLastNodeToTotals(Location newLocation) {
+        endTimeMillis = newLocation.getTime();
 
         // get distance between last 2, add to total
         float distance = getDistanceBetweenLastTwoNodes();
         totalDistance += distance;
         Log.i(getClass().getSimpleName(), "Total Dist: " + totalDistance);
-
     }
 
     public void addLocation(Location location) {
@@ -122,23 +160,6 @@ public class TrackedRoute implements Parcelable {
     public long getTimeBetweenNodes(Location locA, Location locB) {
         return locB.getTime() - locA.getTime();
     }
-
-
-    protected TrackedRoute(Parcel in) {
-        locationNodes = in.createTypedArrayList(Location.CREATOR);
-    }
-
-    public static final Creator<TrackedRoute> CREATOR = new Creator<TrackedRoute>() {
-        @Override
-        public TrackedRoute createFromParcel(Parcel in) {
-            return new TrackedRoute(in);
-        }
-
-        @Override
-        public TrackedRoute[] newArray(int size) {
-            return new TrackedRoute[size];
-        }
-    };
 
     @Override
     public int describeContents() {
