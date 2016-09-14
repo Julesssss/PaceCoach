@@ -60,7 +60,7 @@ public class SplitsRecyclerAdapter extends RecyclerView.Adapter<SplitsRecyclerAd
     @Override
     public void onClick(View v) {
         TrackedRoute split = (TrackedRoute) v.getTag();
-        Intent intent = new Intent(Pacer.getmInstance(), MainActivity.class);
+        Intent intent = new Intent(Pacer.getInstance(), MainActivity.class);
 //        intent.putExtra(Constants.KEY_SPLIT_ID, split.getId());
         mCallback.onIntentReceived(intent);
     }
