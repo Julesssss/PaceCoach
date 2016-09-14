@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer;
+package com.gmail.julianrosser91.pacer.controllers;
 
 import android.app.Service;
 import android.content.Intent;

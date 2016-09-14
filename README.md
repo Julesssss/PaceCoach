@@ -1,13 +1,6 @@
-# Pace Coach
-Pace Coach lets you track your pace whole running or cycling.
+# Pacer MVP
+An Android app which gives you pace feedback while running or cycling without having to handle your phone.
 
 - Track Pace while running with minimal distraction
 - Audio feedback to prevent breaks in exercise
-- Designed to be used alongside free versions of running route tracking apps 
-
-
-
-TODO:
-- Create class structure for holding nodes and runs.
-- Don't add node if distance is 0.0m
-- Move to Service class
+- Designed to be used alongside free versions of running route tracking apps

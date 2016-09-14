@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer;
+package com.gmail.julianrosser91.pacer.views;
 
 import android.Manifest;
 import android.content.Context;
@@ -23,6 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gmail.julianrosser91.pacer.R;
+import com.gmail.julianrosser91.pacer.controllers.SplitsRecyclerAdapter;
+import com.gmail.julianrosser91.pacer.controllers.TrackingService;
+import com.gmail.julianrosser91.pacer.events.IntentCallback;
 import com.gmail.julianrosser91.pacer.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.events.UpdateTrackedRouteEvent;
 import com.gmail.julianrosser91.pacer.model.TrackedRoute;

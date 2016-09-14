@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer;
+package com.gmail.julianrosser91.pacer.controllers;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gmail.julianrosser91.pacer.Pacer;
+import com.gmail.julianrosser91.pacer.R;
+import com.gmail.julianrosser91.pacer.events.IntentCallback;
 import com.gmail.julianrosser91.pacer.model.TrackedRoute;
+import com.gmail.julianrosser91.pacer.views.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
