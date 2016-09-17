@@ -40,6 +40,7 @@ public class SplitsRecyclerAdapter extends RecyclerView.Adapter<SplitsRecyclerAd
         TrackedRoute split = splits.get(position);
         holder.setTag(split);
         holder.setSplitPace(split.getTotalDistance());
+        holder.setInfo("Dist: " + split.getDistanceBetweenLastTwoNodes() + "  |  Time: " + split.getTimeBetweenLastTwoNodes());
         holder.setSplitNumber(position);
     }
 
@@ -93,6 +94,10 @@ public class SplitsRecyclerAdapter extends RecyclerView.Adapter<SplitsRecyclerAd
 
         public void setSplitPace(float pace) {
             mTextSplitPace.setText(String.valueOf(pace));
+        }
+
+        public void setInfo(String info) {
+            mTextSplitPace.setText(info);
         }
 
     }

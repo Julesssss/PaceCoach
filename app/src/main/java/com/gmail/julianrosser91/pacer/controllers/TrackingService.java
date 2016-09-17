@@ -78,7 +78,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         mServiceLooper = thread.getLooper();
         mServiceHandler = new ServiceHandler(mServiceLooper);
 
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Tracking started", Toast.LENGTH_SHORT).show();
 
         // Send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -89,7 +89,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
-        Toast.makeText(this, "service stopped", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "tracking stopped", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -139,15 +139,18 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
                     @Override
                     public void onLocationChanged(Location location) {
                         handleUpdatedLocation(location);
-                        Log.i(getClass().getSimpleName(), "(L) new loc: " + location.getLatitude() + " | " + location.getLongitude());
+                        Log.i(getClass().getSimpleName(), "Loc: " + location.getLatitude() + " | " + location.getLongitude());
                     }
                 });
     }
 
     private void handleUpdatedLocation(Location location) {
-        trackedRoute.addLocation(location);
-        mLastUpdatedTimeMillis = System.currentTimeMillis();
-        EventBus.getDefault().post(new UpdateTrackedRouteEvent(trackedRoute));
+        // if location differs from last
+        if (trackedRoute.locationDiffersFromLast(location)) {
+            trackedRoute.addLocation(location);
+            mLastUpdatedTimeMillis = System.currentTimeMillis();
+            EventBus.getDefault().post(new UpdateTrackedRouteEvent(trackedRoute));
+        }
     }
 
     public void stopTrackingLocation() {

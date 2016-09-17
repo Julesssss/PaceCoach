@@ -170,4 +170,12 @@ public class TrackedRoute implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(locationNodes);
     }
+
+    public boolean locationDiffersFromLast(Location location) {
+        if (locationNodes == null || locationNodes.size() == 0) {
+            return true;
+        } else {
+            return location.distanceTo(getLastLocation()) > 0;
+        }
+    }
 }
