@@ -220,11 +220,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void updateListenerStateText(LocationListenerState state) {
         switch (state) {
             case LISTENING:
-                mTextListenerState.setText(R.string.listening);
+                mTextListenerState.setText(R.string.stopped);
                 mTextListenerState.setTextColor(getResources().getColor(R.color.green));
                 return;
             case DISCONNECTED:
-                mTextListenerState.setText(R.string.disconnected);
+                mTextListenerState.setText(R.string.tracking);
                 mTextListenerState.setTextColor(getResources().getColor(R.color.orange));
                 return;
             default:

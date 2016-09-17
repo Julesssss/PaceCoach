@@ -60,7 +60,7 @@ public class MainPresenter
     @Override
     public void clickStopTrackingButton() {
         mModel.stopTrackingService();
-        Log.i(getClass().getSimpleName(), "start tracking...");
+        Log.i(getClass().getSimpleName(), "stop tracking...");
     }
 
     @Override
@@ -70,18 +70,24 @@ public class MainPresenter
 
     @Override
     public boolean onTrackingServiceStarted() {
-        mView.get().showTrackingStartedMessage("Started tracking");
+        if (mView != null) {
+            mView.get().updateTrackingStatus(TrackingStatus.TRACKING);
+        }
         return false;
     }
 
     @Override
     public boolean onTrackingServiceStopped() {
-        mView.get().showTrackingStoppedMessage("Stopped tracking");
+        if (mView != null) {
+            mView.get().updateTrackingStatus(TrackingStatus.STOPPED);
+        }
         return false;
     }
 
     @Override
-    public boolean onLocationUpdated() {
-        return false;
+    public void onLocationUpdated(MainModel.Split split) {
+        if (mView != null) {
+            mView.get().updateViewWithPace(split.getKmPerHour());
+        }
     }
 }

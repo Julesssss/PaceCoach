@@ -11,9 +11,8 @@ public class MVPInterfaces {
      *      PRESENTER to VIEW
      */
     interface RequiredViewOps extends ActivityView {
-        void updateViewWithPace();
-        void showTrackingStartedMessage(String s);
-        void showTrackingStoppedMessage(String s);
+        void updateViewWithPace(String pace);
+        void updateTrackingStatus(TrackingStatus status);
     }
 
 
@@ -33,7 +32,7 @@ public class MVPInterfaces {
     interface RequiredPresenterOps {
         boolean onTrackingServiceStarted();
         boolean onTrackingServiceStopped();
-        boolean onLocationUpdated();
+        void onLocationUpdated(MainModel.Split split);
 
     }
 

@@ -33,26 +33,25 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/text_listener_state"
+        android:id="@+id/text_tracking_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_buttons"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="@string/disconnected"
+        android:text="@string/stopped"
         android:textColor="@color/red"
         android:textSize="15sp"
         android:textStyle="bold" />
 
-    <!--<TextView-->
-        <!--android:id="@+id/text_current_location"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/text_listener_state"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="4dp"-->
-        <!--android:text="currentLocation"-->
-        <!--android:textSize="20sp" />-->
+    <TextView
+        android:id="@+id/text_last_pace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_tracking_state"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:textSize="20sp" />
 
     <!--<TextView-->
         <!--android:id="@+id/text_last_updated"-->
@@ -172,7 +171,7 @@
         android:id="@+id/splitRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/text_listener_state"
+        android:layout_below="@id/text_last_pace"
         android:layout_marginTop="16dp" />
 
 
