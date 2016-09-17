@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.gmail.julianrosser91.pacer"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.google.android.gms:play-services:9.0.2'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.tinmegali.mvp:mvp:0.0.7'
 }
