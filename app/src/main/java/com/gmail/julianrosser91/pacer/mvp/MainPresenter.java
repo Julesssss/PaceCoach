@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.tinmegali.mvp.mvp.GenericPresenter;
 
+import java.lang.ref.WeakReference;
+
 public class MainPresenter
         extends GenericPresenter<MVPInterfaces.RequiredPresenterOps,
         MVPInterfaces.ProvidedModelOps,
@@ -12,6 +14,17 @@ public class MainPresenter
         implements
         MVPInterfaces.RequiredPresenterOps,
         MVPInterfaces.ProvidedPresenterOps {
+
+    // Layer View reference
+    private WeakReference<MVPInterfaces.RequiredViewOps> mView;
+    // Layer Model reference
+    private MVPInterfaces.ProvidedModelOps mModel;
+
+    public MainPresenter(MVPInterfaces.RequiredViewOps mView) {
+        this.mView = new WeakReference<>(mView);
+        this.mModel = new MainModel(this);
+    }
+
 
     /**
      * Operation called during VIEW creation in
@@ -25,6 +38,7 @@ public class MainPresenter
         super.onCreate(MainModel.class, this);
 //         super.onCreate(<Model.class>, <RequiredPresenterOps>);
         setView(view);
+
     }
 
     /**
@@ -34,16 +48,18 @@ public class MainPresenter
      */
     @Override
     public void onConfigurationChanged(MVPInterfaces.RequiredViewOps view) {
-        setView(view);
+        mView = new WeakReference<>(view);
     }
 
     @Override
     public void clickStartTrackingButton() {
         Log.i(getClass().getSimpleName(), "start tracking...");
+        mModel.startTrackingService();
     }
 
     @Override
     public void clickStopTrackingButton() {
+        mModel.stopTrackingService();
         Log.i(getClass().getSimpleName(), "start tracking...");
     }
 
@@ -54,11 +70,13 @@ public class MainPresenter
 
     @Override
     public boolean onTrackingServiceStarted() {
+        mView.get().showTrackingStartedMessage("Started tracking");
         return false;
     }
 
     @Override
     public boolean onTrackingServiceStopped() {
+        mView.get().showTrackingStoppedMessage("Stopped tracking");
         return false;
     }
 

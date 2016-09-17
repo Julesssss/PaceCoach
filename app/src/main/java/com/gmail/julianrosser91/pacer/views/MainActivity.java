@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        setUpViews();
+//        setUpViews();
         updateValuesFromBundle(savedInstanceState);
     }
 
@@ -148,25 +148,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setUpViews() {
-        mTextCurrentLocation = (TextView) findViewById(R.id.text_current_location);
-        mTextLastUpdated = (TextView) findViewById(R.id.text_last_updated);
-        mTextListenerState = (TextView) findViewById(R.id.text_listener_state);
-        mTextExerciseNodeCount = (TextView) findViewById(R.id.text_exercise_node_count);
-        mTextKmph = (TextView) findViewById(R.id.text_kmph);
-
-        mTextSplitTime = (TextView) findViewById(R.id.text_split_time);
-        mTextSplitDistance = (TextView) findViewById(R.id.text_split_distance);
-        mTextTotalTime = (TextView) findViewById(R.id.text_total_time);
-        mTextTotalDistance = (TextView) findViewById(R.id.text_total_distance);
-
-        mButtonStart = (Button) findViewById(R.id.button_start_tracking);
-        mButtonStart.setOnClickListener(this);
-        mButtonStop = (Button) findViewById(R.id.button_stop_tracking);
-        mButtonStop.setOnClickListener(this);
-
-        setUpRecyclerView();
-    }
+//    private void setUpViews() {
+//        mTextCurrentLocation = (TextView) findViewById(R.id.text_current_location);
+//        mTextLastUpdated = (TextView) findViewById(R.id.text_last_updated);
+//        mTextListenerState = (TextView) findViewById(R.id.text_listener_state);
+//        mTextExerciseNodeCount = (TextView) findViewById(R.id.text_exercise_node_count);
+//        mTextKmph = (TextView) findViewById(R.id.text_kmph);
+//
+//        mTextSplitTime = (TextView) findViewById(R.id.text_split_time);
+//        mTextSplitDistance = (TextView) findViewById(R.id.text_split_distance);
+//        mTextTotalTime = (TextView) findViewById(R.id.text_total_time);
+//        mTextTotalDistance = (TextView) findViewById(R.id.text_total_distance);
+//
+//        mButtonStart = (Button) findViewById(R.id.button_start_tracking);
+//        mButtonStart.setOnClickListener(this);
+//        mButtonStop = (Button) findViewById(R.id.button_stop_tracking);
+//        mButtonStop.setOnClickListener(this);
+//
+//        setUpRecyclerView();
+//    }
 
     private void setUpRecyclerView() {
         mRecyclerViewSplits = (RecyclerView) findViewById(R.id.splitRecyclerView);

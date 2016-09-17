@@ -3,6 +3,7 @@ package com.gmail.julianrosser91.pacer.mvp;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.R;
 import com.tinmegali.mvp.mvp.GenericMVPActivity;
@@ -25,9 +26,9 @@ public class MainActivity extends GenericMVPActivity<MVPInterfaces.RequiredViewO
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.onCreate(MainPresenter.class, this);
+//        super.onCreate(MainPresenter.class, this);
         setContentView(R.layout.activity_main);
-        presenter = new MainPresenter();
+        presenter = new MainPresenter(this);
         setUpButtons();
     }
 
@@ -44,6 +45,16 @@ public class MainActivity extends GenericMVPActivity<MVPInterfaces.RequiredViewO
 
     @Override
     public void updateViewWithPace() {
+    }
+
+    @Override
+    public void showTrackingStartedMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showTrackingStoppedMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

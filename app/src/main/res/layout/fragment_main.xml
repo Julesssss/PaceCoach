@@ -44,135 +44,135 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/text_current_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_listener_state"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp"
-        android:text="currentLocation"
-        android:textSize="20sp" />
+    <!--<TextView-->
+        <!--android:id="@+id/text_current_location"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/text_listener_state"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:text="currentLocation"-->
+        <!--android:textSize="20sp" />-->
 
-    <TextView
-        android:id="@+id/text_last_updated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_current_location"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp"
-        android:text="lastUpdated"
-        android:textSize="15sp" />
+    <!--<TextView-->
+        <!--android:id="@+id/text_last_updated"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/text_current_location"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:text="lastUpdated"-->
+        <!--android:textSize="15sp" />-->
 
-    <TextView
-        android:id="@+id/text_exercise_node_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text_last_updated"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="total nodes"
-        android:textSize="15sp" />
+    <!--<TextView-->
+        <!--android:id="@+id/text_exercise_node_count"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/text_last_updated"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="total nodes"-->
+        <!--android:textSize="15sp" />-->
 
-    <TextView
-        android:id="@+id/text_kmph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_exercise_node_count"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="\? km/h"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+    <!--<TextView-->
+        <!--android:id="@+id/text_kmph"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/text_exercise_node_count"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="\? km/h"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textStyle="bold" />-->
 
-    <LinearLayout
-        android:id="@+id/layoutSplits"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_kmph"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/layoutSplits"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/text_kmph"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:gravity="center_horizontal">-->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp"
-            android:gravity="right"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:gravity="right"-->
+            <!--android:orientation="vertical">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Split Time:"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:text="Split Time:"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Split Dist:"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:text="Split Dist:"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:text="Total Time:"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:text="Total Time:"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Total Dist:"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:text="Total Dist:"-->
+                <!--android:textSize="15sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="8dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:orientation="vertical">-->
 
-            <TextView
-                android:id="@+id/text_split_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_split_time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:id="@+id/text_split_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_split_distance"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:id="@+id/text_total_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_total_time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:textSize="15sp" />-->
 
-            <TextView
-                android:id="@+id/text_total_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/text_total_distance"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="15sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/splitRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layoutSplits"
+        android:layout_below="@id/text_listener_state"
         android:layout_marginTop="16dp" />
 
 

@@ -1,9 +1,18 @@
 package com.gmail.julianrosser91.pacer.mvp;
 
+import android.widget.Toast;
+
 import com.tinmegali.mvp.mvp.GenericModel;
 
 public class MainModel extends GenericModel<MVPInterfaces.RequiredPresenterOps>
         implements MVPInterfaces.ProvidedModelOps {
+
+    // Presenter reference
+    private MVPInterfaces.RequiredPresenterOps mPresenter;
+
+    public MainModel(MVPInterfaces.RequiredPresenterOps mPresenter) {
+        this.mPresenter = mPresenter;
+    }
 
     /**
      * Method that recovers a reference to the PRESENTER
@@ -30,12 +39,12 @@ public class MainModel extends GenericModel<MVPInterfaces.RequiredPresenterOps>
     }
 
     @Override
-    public boolean startTrackingService() {
-        return false;
+    public void startTrackingService() {
+        mPresenter.onTrackingServiceStarted();
     }
 
     @Override
-    public boolean stopTrackingService() {
-        return false;
+    public void stopTrackingService() {
+        mPresenter.onTrackingServiceStopped();
     }
 }
