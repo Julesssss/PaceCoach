@@ -26,5 +26,4 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.tinmegali.mvp:mvp:0.0.7'
 }

@@ -3,7 +3,6 @@ package com.gmail.julianrosser91.pacer.main;
 import android.content.Context;
 import android.util.Log;
 
-import com.gmail.julianrosser91.pacer.basicmpv.MVP_Main;
 import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
 
 import java.lang.ref.WeakReference;

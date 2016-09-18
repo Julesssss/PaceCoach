@@ -35,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
         setupMVP();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     private void setUpViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,16 +74,14 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
             // Add Presenter and Model to StateMaintainer
             mStateMaintainer.put(presenter);
             mStateMaintainer.put(model);
-
             // Set the Presenter as a interface
             // To limit the communication with it
             mPresenter = presenter;
-
         }
         // get the Presenter from StateMaintainer
         else {
             // Get the Presenter
-            mPresenter = mStateMaintainer.get(com.gmail.julianrosser91.pacer.basicmpv.MainPresenter.class.getName());
+            mPresenter = mStateMaintainer.get(MainPresenter.class.getName());
             // Updated the View in Presenter
             mPresenter.setView(this);
         }
