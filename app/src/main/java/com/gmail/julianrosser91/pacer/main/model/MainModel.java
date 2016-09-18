@@ -2,27 +2,30 @@ package com.gmail.julianrosser91.pacer.main.model;
 
 import android.os.Handler;
 
+import com.gmail.julianrosser91.pacer.model.objects.Route;
+import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.model.objects.Split;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 
 import java.util.Random;
 
-public class MainModel implements MainInterfaces.ProvidedModelOps {
+public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUpdateListener {
 
     // Presenter reference
     private MainInterfaces.RequiredPresenterOps mPresenter;
     private Handler mHandler;
-    private Split lastSplit;
+
+    private Route mRoute;
 
     private MainState mMainState = MainState.STOPPED;
 
     public MainModel(MainInterfaces.RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
+        mRoute = new Route(this);
     }
 
     /**
      * Called by Presenter when View is destroyed
-     * @param isChangingConfiguration   true configuration is changing
      */
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
@@ -32,12 +35,8 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
         }
     }
 
-    public String getLastSplitPace() {
-        if (lastSplit != null) {
-            return lastSplit.getKmPerHour();
-        } else {
-            return new Split().getKmPerHour();
-        }
+    public RouteUpdate getLastRouteUpdate() {
+        return mRoute.getLastRouteUpdate();
     }
 
     public void updateState(MainState state) {
@@ -60,7 +59,10 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
         stopRepeatingTask();
     }
 
-
+    @Override
+    public void onRouteUpdated(RouteUpdate routeUpdate) {
+        mPresenter.onRouteUpdated(routeUpdate);
+    }
 
     /**
      * Temporary method for supplying sample location data
@@ -80,8 +82,7 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
 
         long meters = (long) (v + r);
         Split split = new Split(meters, 3);
-        this.lastSplit = split;
-        mPresenter.onLocationUpdated(split);
+        mRoute.addSplit(split);
     }
 
     void startRepeatingTask() {

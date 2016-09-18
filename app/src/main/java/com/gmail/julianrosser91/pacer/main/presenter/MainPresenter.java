@@ -3,7 +3,7 @@ package com.gmail.julianrosser91.pacer.main.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 
@@ -100,6 +100,13 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     }
 
     @Override
+    public void onRouteUpdated(RouteUpdate routeUpdate) {
+        if (mView != null && mView.get() != null) {
+            mView.get().updateRouteInfo(routeUpdate);
+        }
+    }
+
+    @Override
     public void clickStartTrackingButton() {
         Log.i(getClass().getSimpleName(), "start tracking...");
         mModel.startTrackingService();
@@ -126,15 +133,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     public void updateViewState() {
         if (mView != null && mView.get() != null) {
             mView.get().updateTrackingStatus(mModel.getState());
-            mView.get().updateViewWithPace(mModel.getLastSplitPace());
+            mView.get().updateRouteInfo(mModel.getLastRouteUpdate());
         }
     }
-
-    @Override
-    public void onLocationUpdated(Split split) {
-        if (mView != null && mView.get() != null) {
-            mView.get().updateViewWithPace(split.getKmPerHour());
-        }
-    }
-
 }

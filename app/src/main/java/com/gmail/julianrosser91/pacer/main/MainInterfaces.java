@@ -2,7 +2,7 @@ package com.gmail.julianrosser91.pacer.main;
 
 import android.content.Context;
 
-import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 
 /**
@@ -18,13 +18,13 @@ public class MainInterfaces {
      * PRESENTER > VIEW
      */
     public interface RequiredViewOps {
-        void updateViewWithPace(String pace);
-
         Context getAppContext();
 
         void updateTrackingStatus(MainState status);
 
         Context getActivityContext();
+
+        void updateRouteInfo(RouteUpdate routeUpdate);
     }
 
 
@@ -51,12 +51,11 @@ public class MainInterfaces {
 
         void onTrackingServiceStopped();
 
-        void onLocationUpdated(Split split);
-
         Context getAppContext();
 
         Context getActivityContext();
 
+        void onRouteUpdated(RouteUpdate routeUpdate);
     }
 
     /**
@@ -70,7 +69,7 @@ public class MainInterfaces {
 
         void onDestroy(boolean isChangingConfiguration);
 
-        String getLastSplitPace();
+        RouteUpdate getLastRouteUpdate();
 
         void updateState(MainState tracking);
 

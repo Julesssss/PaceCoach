@@ -14,6 +14,7 @@ import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainModel;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
+import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;
 
 /**
@@ -26,10 +27,16 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     // during configurations change
     private final StateMaintainer mStateMaintainer =
             new StateMaintainer(getFragmentManager(), MainActivity.class.getName());
-    // MPV Presenter
-    private TextView textTrackingState;
-    // Views
+
+    // MPV Presenter. Only link to data level
     private MainPresenter mPresenter;
+
+    // Views
+    private TextView textTrackingState;
+    private TextView textLastSpeed;
+    private TextView textTotalDistance;
+    private TextView textTotalTime;
+    private TextView textTotalPace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +50,18 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDestroy(isChangingConfigurations());
-
     }
 
     private void setUpViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         textTrackingState = (TextView) findViewById(R.id.text_tracking_state);
+        textLastSpeed = (TextView) findViewById(R.id.text_last_speed);
+        textTotalDistance = (TextView) findViewById(R.id.text_total_distance);
+        textTotalTime = (TextView) findViewById(R.id.text_total_time);
+        textTotalPace = (TextView) findViewById(R.id.text_total_pace);
+
         Button buttonStart = (Button) findViewById(R.id.button_start_tracking);
         if (buttonStart != null) {
             buttonStart.setOnClickListener(this);
@@ -93,10 +105,18 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     }
 
     @Override
-    public void updateViewWithPace(String pace) {
-        TextView textLastPace = (TextView) findViewById(R.id.text_last_pace);
-        if (textLastPace != null) {
-            textLastPace.setText(pace);
+    public void updateRouteInfo(RouteUpdate routeUpdate) {
+        if (textLastSpeed != null) {
+            textLastSpeed.setText(routeUpdate.getSpeed());
+        }
+        if (textTotalDistance != null) {
+            textTotalDistance.setText(routeUpdate.getDistance());
+        }
+        if (textTotalTime != null) {
+            textTotalTime.setText(routeUpdate.getDuration());
+        }
+        if (textTotalPace != null) {
+            textTotalPace.setText(routeUpdate.getPace());
         }
     }
 

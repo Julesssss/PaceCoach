@@ -7,6 +7,7 @@ public class Split {
     long seconds;
     long meters;
 
+
     public Split() {
         this.seconds = 0;
         this.meters = 0;
@@ -26,10 +27,7 @@ public class Split {
     }
 
     public String getKmPerHour() {
-        return "" + PaceUtils.getKmPerHour(seconds * 1000, meters) + " kmph";
+        return "" + PaceUtils.getKmPerHour(seconds * 1000, meters);
     }
 
-    public String getPace() {
-        return meters / seconds + "/mps   //  " + seconds + " secs / " + meters + " meters";
-    }
 }
