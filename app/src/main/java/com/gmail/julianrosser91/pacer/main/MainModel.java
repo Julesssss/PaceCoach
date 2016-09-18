@@ -3,43 +3,29 @@ package com.gmail.julianrosser91.pacer.main;
 import android.os.Handler;
 
 import com.gmail.julianrosser91.pacer.utils.PaceUtils;
-import com.tinmegali.mvp.mvp.GenericModel;
 
 import java.util.Random;
 
-public class MainModel extends GenericModel<MainInterfaces.RequiredPresenterOps>
-        implements MainInterfaces.ProvidedModelOps {
+public class MainModel implements MainInterfaces.ProvidedModelOps {
 
     // Presenter reference
     private MainInterfaces.RequiredPresenterOps mPresenter;
     private Handler mHandler;
 
-    public MainModel(MainInterfaces.RequiredPresenterOps mPresenter) {
-        this.mPresenter = mPresenter;
+    public MainModel(MainInterfaces.RequiredPresenterOps presenter) {
+        this.mPresenter = presenter;
     }
 
     /**
-     * Method that recovers a reference to the PRESENTER
-     * - You must ALWAYS call {@link super#onCreate(Object)} here
-     *
-     * @param presenterOps Presenter interface
-     */
-    @Override
-    public void onCreate(MainInterfaces.RequiredPresenterOps presenterOps) {
-        super.onCreate(presenterOps);
-        // initialize objects
-    }
-
-    /**
-     * Called by layer PRESENTER when VIEW pass for a reconstruction/destruction.
-     * Usefull for kill/stop activities that could be running on the background
-     * Threads
-     *
-     * @param isChangingConfiguration Informs that a change is occurring on configuration
+     * Called by Presenter when View is destroyed
+     * @param isChangingConfiguration   true configuration is changing
      */
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
-        // kill or stop actions
+        if (!isChangingConfiguration) {
+            mPresenter = null;
+            stopTrackingService();
+        }
     }
 
     @Override
