@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.main;
+package com.gmail.julianrosser91.pacer.utils;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

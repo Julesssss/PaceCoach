@@ -1,6 +1,6 @@
 package com.gmail.julianrosser91.pacer.model.events;
 
-import com.gmail.julianrosser91.pacer.model.TrackedRoute;
+import com.gmail.julianrosser91.pacer.model.objects.TrackedRoute;
 
 public class UpdateTrackedRouteEvent {
 

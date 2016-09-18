@@ -1,9 +1,11 @@
-package com.gmail.julianrosser91.pacer.main;
+package com.gmail.julianrosser91.pacer.main.presenter;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
+import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.main.MainInterfaces;
+import com.gmail.julianrosser91.pacer.main.model.MainState;
 
 import java.lang.ref.WeakReference;
 
@@ -60,6 +62,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     @Override
     public void setView(MainInterfaces.RequiredViewOps view) {
         mView = new WeakReference<>(view);
+        updateViewState();
     }
 
     /**
@@ -109,24 +112,27 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     }
 
     @Override
-    public boolean onTrackingServiceStarted() {
-        if (mView != null) {
-            mView.get().updateTrackingStatus(TrackingStatusEnum.TRACKING);
-        }
-        return false;
+    public void onTrackingServiceStarted() {
+        mModel.updateState(MainState.TRACKING);
+        updateViewState();
     }
 
     @Override
-    public boolean onTrackingServiceStopped() {
-        if (mView != null) {
-            mView.get().updateTrackingStatus(TrackingStatusEnum.STOPPED);
+    public void onTrackingServiceStopped() {
+        mModel.updateState(MainState.STOPPED);
+        updateViewState();
+    }
+
+    public void updateViewState() {
+        if (mView != null && mView.get() != null) {
+            mView.get().updateTrackingStatus(mModel.getState());
+            mView.get().updateViewWithPace(mModel.getLastSplitPace());
         }
-        return false;
     }
 
     @Override
-    public void onLocationUpdated(MainModel.Split split) {
-        if (mView != null) {
+    public void onLocationUpdated(Split split) {
+        if (mView != null && mView.get() != null) {
             mView.get().updateViewWithPace(split.getKmPerHour());
         }
     }

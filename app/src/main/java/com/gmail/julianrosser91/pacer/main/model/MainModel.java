@@ -1,8 +1,9 @@
-package com.gmail.julianrosser91.pacer.main;
+package com.gmail.julianrosser91.pacer.main.model;
 
 import android.os.Handler;
 
-import com.gmail.julianrosser91.pacer.utils.PaceUtils;
+import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 
 import java.util.Random;
 
@@ -11,6 +12,9 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
     // Presenter reference
     private MainInterfaces.RequiredPresenterOps mPresenter;
     private Handler mHandler;
+    private Split lastSplit;
+
+    private MainState mMainState = MainState.STOPPED;
 
     public MainModel(MainInterfaces.RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
@@ -23,9 +27,25 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
         if (!isChangingConfiguration) {
-            mPresenter = null;
             stopTrackingService();
+            mPresenter = null;
         }
+    }
+
+    public String getLastSplitPace() {
+        if (lastSplit != null) {
+            return lastSplit.getKmPerHour();
+        } else {
+            return new Split().getKmPerHour();
+        }
+    }
+
+    public void updateState(MainState state) {
+        mMainState = state;
+    }
+
+    public MainState getState() {
+        return mMainState;
     }
 
     @Override
@@ -40,8 +60,10 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
         stopRepeatingTask();
     }
 
+
+
     /**
-     * todo - Temporary method for supplying sample location data
+     * Temporary method for supplying sample location data
      */
     private void startReturningFakeLocationData() {
         if (mHandler != null) {
@@ -58,6 +80,7 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
 
         long meters = (long) (v + r);
         Split split = new Split(meters, 3);
+        this.lastSplit = split;
         mPresenter.onLocationUpdated(split);
     }
 
@@ -84,31 +107,4 @@ public class MainModel implements MainInterfaces.ProvidedModelOps {
         }
     };
 
-
-    public class Split {
-
-        long seconds;
-        long meters;
-
-        public Split(long meters, long seconds) {
-            this.seconds = seconds;
-            this.meters = meters;
-        }
-
-        public long getSeconds() {
-            return seconds;
-        }
-
-        public long getMeters() {
-            return meters;
-        }
-
-        public String getKmPerHour() {
-            return "" + PaceUtils.getKmPerHour(seconds * 1000, meters) + " kmph";
-        }
-
-        public String getPace() {
-            return meters / seconds + "/mps   //  " + seconds + " secs / " + meters + " meters";
-        }
-    }
 }

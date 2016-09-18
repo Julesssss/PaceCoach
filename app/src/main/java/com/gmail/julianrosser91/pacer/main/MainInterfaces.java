@@ -2,7 +2,8 @@ package com.gmail.julianrosser91.pacer.main;
 
 import android.content.Context;
 
-import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
+import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.main.model.MainState;
 
 /**
  * Holder interface that contains all interfaces
@@ -14,14 +15,14 @@ public class MainInterfaces {
 
     /**
      * Required VIEW methods available to PRESENTER
-     * PRESENTER to VIEW
+     * PRESENTER > VIEW
      */
-    interface RequiredViewOps {
+    public interface RequiredViewOps {
         void updateViewWithPace(String pace);
 
-        void updateTrackingStatus(TrackingStatusEnum status);
-
         Context getAppContext();
+
+        void updateTrackingStatus(MainState status);
 
         Context getActivityContext();
     }
@@ -29,9 +30,9 @@ public class MainInterfaces {
 
     /**
      * Operations offered to VIEW to communicate with PRESENTER
-     * VIEW to PRESENTER
+     * VIEW > PRESENTER
      */
-    interface ProvidedPresenterOps {
+    public interface ProvidedPresenterOps {
         void clickStartTrackingButton();
 
         void clickStopTrackingButton();
@@ -43,31 +44,37 @@ public class MainInterfaces {
 
     /**
      * Required PRESENTER methods available to MODEL
-     * MODEL to PRESENTER
+     * MODEL > PRESENTER
      */
-    interface RequiredPresenterOps {
-        boolean onTrackingServiceStarted();
+    public interface RequiredPresenterOps {
+        void onTrackingServiceStarted();
 
-        boolean onTrackingServiceStopped();
+        void onTrackingServiceStopped();
 
-        void onLocationUpdated(MainModel.Split split);
+        void onLocationUpdated(Split split);
 
         Context getAppContext();
+
         Context getActivityContext();
 
     }
 
     /**
-     * todo <-- LOCATION SERVICE --></-->
      * Operations offered to MODEL to communicate with PRESENTER
-     * PRESENTER to MODEL
+     * PRESENTER > MODEL
      */
-    interface ProvidedModelOps {
+    public interface ProvidedModelOps {
         void startTrackingService();
 
         void stopTrackingService();
 
         void onDestroy(boolean isChangingConfiguration);
+
+        String getLastSplitPace();
+
+        void updateState(MainState tracking);
+
+        MainState getState();
     }
 
 }
