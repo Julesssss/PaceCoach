@@ -1,23 +1,23 @@
-package com.gmail.julianrosser91.pacer.mvp;
+package com.gmail.julianrosser91.pacer.main;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.R;
+import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
 import com.tinmegali.mvp.mvp.GenericMVPActivity;
 
 /**
  * VIEW layer of MVP pattern
- * MainActivity - View shows infomation about meters, time and pace
+ * MainView - View shows infomation about meters, time and pace
  */
-public class MainActivity extends GenericMVPActivity<MVPInterfaces.RequiredViewOps,
-        MVPInterfaces.ProvidedPresenterOps,
+public class MainView extends GenericMVPActivity<MainInterfaces.RequiredViewOps,
+        MainInterfaces.ProvidedPresenterOps,
         MainPresenter>
-        implements MVPInterfaces.RequiredViewOps, View.OnClickListener {
+        implements MainInterfaces.RequiredViewOps, View.OnClickListener {
 
     private MainPresenter presenter;
     private TextView textTrackingState;
@@ -59,9 +59,9 @@ public class MainActivity extends GenericMVPActivity<MVPInterfaces.RequiredViewO
 
     //- todo - STATES!!!!!!!!!!!!!!!!!!
     @Override
-    public void updateTrackingStatus(TrackingStatus status) {
+    public void updateTrackingStatus(TrackingStatusEnum status) {
         textTrackingState.setText(status.toString());
-        if (status == TrackingStatus.STOPPED) {
+        if (status == TrackingStatusEnum.STOPPED) {
             textTrackingState.setTextColor(getResources().getColor(R.color.red));
         } else {
             textTrackingState.setTextColor(getResources().getColor(R.color.green));

@@ -1,10 +1,11 @@
-package com.gmail.julianrosser91.pacer.mvp;
+package com.gmail.julianrosser91.pacer.main;
 
+import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
 import com.tinmegali.mvp.mvp.ActivityView;
 import com.tinmegali.mvp.mvp.ModelOps;
 import com.tinmegali.mvp.mvp.PresenterOps;
 
-public class MVPInterfaces {
+public class MainInterfaces {
 
     /**
      * Required VIEW methods available to PRESENTER
@@ -12,7 +13,7 @@ public class MVPInterfaces {
      */
     interface RequiredViewOps extends ActivityView {
         void updateViewWithPace(String pace);
-        void updateTrackingStatus(TrackingStatus status);
+        void updateTrackingStatus(TrackingStatusEnum status);
     }
 
 

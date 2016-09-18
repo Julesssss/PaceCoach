@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.mvp;
+package com.gmail.julianrosser91.pacer.main;
 
 import android.os.Handler;
 
@@ -7,14 +7,14 @@ import com.tinmegali.mvp.mvp.GenericModel;
 
 import java.util.Random;
 
-public class MainModel extends GenericModel<MVPInterfaces.RequiredPresenterOps>
-        implements MVPInterfaces.ProvidedModelOps {
+public class MainModel extends GenericModel<MainInterfaces.RequiredPresenterOps>
+        implements MainInterfaces.ProvidedModelOps {
 
     // Presenter reference
-    private MVPInterfaces.RequiredPresenterOps mPresenter;
+    private MainInterfaces.RequiredPresenterOps mPresenter;
     private Handler mHandler;
 
-    public MainModel(MVPInterfaces.RequiredPresenterOps mPresenter) {
+    public MainModel(MainInterfaces.RequiredPresenterOps mPresenter) {
         this.mPresenter = mPresenter;
     }
 
@@ -25,7 +25,7 @@ public class MainModel extends GenericModel<MVPInterfaces.RequiredPresenterOps>
      * @param presenterOps Presenter interface
      */
     @Override
-    public void onCreate(MVPInterfaces.RequiredPresenterOps presenterOps) {
+    public void onCreate(MainInterfaces.RequiredPresenterOps presenterOps) {
         super.onCreate(presenterOps);
         // initialize objects
     }

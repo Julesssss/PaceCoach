@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.events;
+package com.gmail.julianrosser91.pacer.model.events;
 
 import com.gmail.julianrosser91.pacer.model.TrackedRoute;
 

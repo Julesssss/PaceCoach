@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.views;
+package com.gmail.julianrosser91.pacer.old.views;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,11 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.R;
-import com.gmail.julianrosser91.pacer.controllers.SplitsRecyclerAdapter;
-import com.gmail.julianrosser91.pacer.controllers.TrackingService;
-import com.gmail.julianrosser91.pacer.events.IntentCallback;
-import com.gmail.julianrosser91.pacer.events.StopServiceEvent;
-import com.gmail.julianrosser91.pacer.events.UpdateTrackedRouteEvent;
+import com.gmail.julianrosser91.pacer.old.views.controllers.SplitsRecyclerAdapter;
+import com.gmail.julianrosser91.pacer.model.TrackingService;
+import com.gmail.julianrosser91.pacer.model.events.IntentCallback;
+import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
+import com.gmail.julianrosser91.pacer.model.events.UpdateTrackedRouteEvent;
 import com.gmail.julianrosser91.pacer.model.TrackedRoute;
 import com.gmail.julianrosser91.pacer.utils.Constants;
 

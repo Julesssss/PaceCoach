@@ -1,26 +1,27 @@
-package com.gmail.julianrosser91.pacer.mvp;
+package com.gmail.julianrosser91.pacer.main;
 
 import android.util.Log;
 
+import com.gmail.julianrosser91.pacer.model.TrackingStatusEnum;
 import com.tinmegali.mvp.mvp.GenericPresenter;
 
 import java.lang.ref.WeakReference;
 
 public class MainPresenter
-        extends GenericPresenter<MVPInterfaces.RequiredPresenterOps,
-        MVPInterfaces.ProvidedModelOps,
-        MVPInterfaces.RequiredViewOps,
+        extends GenericPresenter<MainInterfaces.RequiredPresenterOps,
+        MainInterfaces.ProvidedModelOps,
+        MainInterfaces.RequiredViewOps,
         MainModel>
         implements
-        MVPInterfaces.RequiredPresenterOps,
-        MVPInterfaces.ProvidedPresenterOps {
+        MainInterfaces.RequiredPresenterOps,
+        MainInterfaces.ProvidedPresenterOps {
 
     // Layer View reference
-    private WeakReference<MVPInterfaces.RequiredViewOps> mView;
+    private WeakReference<MainInterfaces.RequiredViewOps> mView;
     // Layer Model reference
-    private MVPInterfaces.ProvidedModelOps mModel;
+    private MainInterfaces.ProvidedModelOps mModel;
 
-    public MainPresenter(MVPInterfaces.RequiredViewOps mView) {
+    public MainPresenter(MainInterfaces.RequiredViewOps mView) {
         this.mView = new WeakReference<>(mView);
         this.mModel = new MainModel(this);
     }
@@ -34,7 +35,7 @@ public class MainPresenter
      * @param view The current VIEW instance
      */
     @Override
-    public void onCreate(MVPInterfaces.RequiredViewOps view) {
+    public void onCreate(MainInterfaces.RequiredViewOps view) {
         super.onCreate(MainModel.class, this);
 //         super.onCreate(<Model.class>, <RequiredPresenterOps>);
         setView(view);
@@ -47,7 +48,7 @@ public class MainPresenter
      * @param view The current VIEW instance
      */
     @Override
-    public void onConfigurationChanged(MVPInterfaces.RequiredViewOps view) {
+    public void onConfigurationChanged(MainInterfaces.RequiredViewOps view) {
         mView = new WeakReference<>(view);
     }
 
@@ -71,7 +72,7 @@ public class MainPresenter
     @Override
     public boolean onTrackingServiceStarted() {
         if (mView != null) {
-            mView.get().updateTrackingStatus(TrackingStatus.TRACKING);
+            mView.get().updateTrackingStatus(TrackingStatusEnum.TRACKING);
         }
         return false;
     }
@@ -79,7 +80,7 @@ public class MainPresenter
     @Override
     public boolean onTrackingServiceStopped() {
         if (mView != null) {
-            mView.get().updateTrackingStatus(TrackingStatus.STOPPED);
+            mView.get().updateTrackingStatus(TrackingStatusEnum.STOPPED);
         }
         return false;
     }

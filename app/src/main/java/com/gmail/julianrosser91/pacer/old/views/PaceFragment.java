@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.views;
+package com.gmail.julianrosser91.pacer.old.views;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
