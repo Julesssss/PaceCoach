@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.model;
+package com.gmail.julianrosser91.pacer.model.objects;
 
 import android.location.Location;
 import android.os.Parcel;

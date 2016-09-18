@@ -1,8 +1,6 @@
-package com.gmail.julianrosser91.pacer.events;
+package com.gmail.julianrosser91.pacer.model.events;
 
 import android.content.Intent;
-
-import java.io.Serializable;
 
 public interface IntentCallback {
     void onIntentReceived(Intent chatIntent);

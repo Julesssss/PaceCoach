@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.views;
+package com.gmail.julianrosser91.pacer.main.view;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.gmail.julianrosser91.pacer.R;
 
 /**
- * A placeholder fragment containing a simple view.
+ * A fragment containing the main Pace views
  */
 public class PaceFragment extends Fragment {
 

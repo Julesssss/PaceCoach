@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.controllers;
+package com.gmail.julianrosser91.pacer.model.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -16,9 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.gmail.julianrosser91.pacer.events.StopServiceEvent;
-import com.gmail.julianrosser91.pacer.events.UpdateTrackedRouteEvent;
-import com.gmail.julianrosser91.pacer.model.TrackedRoute;
+import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
+import com.gmail.julianrosser91.pacer.model.events.UpdateTrackedRouteEvent;
+import com.gmail.julianrosser91.pacer.model.objects.TrackedRoute;
 import com.gmail.julianrosser91.pacer.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
