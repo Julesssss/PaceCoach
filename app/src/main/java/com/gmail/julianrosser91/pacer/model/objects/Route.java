@@ -6,30 +6,24 @@ import java.util.ArrayList;
 
 public class Route {
 
-    public interface RouteUpdateListener {
-
-        void onRouteUpdated(RouteUpdate routeUpdate);
-    }
     private ArrayList<Split> splits;
-
     private long startTimeInMillis;
     private RouteUpdateListener mListener;
     // Pre computed totals
     private long distanceInMeters; // check this isn't null!!!!!
-
     private float pace; // time per km
     private float speed;
     private RouteUpdate lastRouteUpdate;
-
     public Route(RouteUpdateListener listener) {
-        this.splits = new ArrayList<>();
         initialiseTotals();
         this.mListener = listener;
     }
 
     private void initialiseTotals() {
+        this.splits = new ArrayList<>();
         distanceInMeters = 0;
         pace = 0;
+        speed = 0;
         lastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
     }
 
@@ -55,7 +49,9 @@ public class Route {
     }
 
     public void reset() {
-
+        splits.clear();
+        initialiseTotals();
+        updateListeners();
     }
 
     /**
@@ -71,7 +67,9 @@ public class Route {
     }
 
     private long getDuration() {
-        return System.currentTimeMillis() - startTimeInMillis;
+        if (splits.size() != 0) {
+            return System.currentTimeMillis() - startTimeInMillis;
+        } else return 0;
     }
 
     private long getDistance() {
@@ -80,6 +78,11 @@ public class Route {
 
     private float getPace() {
         return pace;
+    }
+
+    public interface RouteUpdateListener {
+
+        void onRouteUpdated(RouteUpdate routeUpdate);
     }
 
 }
