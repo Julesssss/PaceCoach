@@ -7,18 +7,18 @@ import java.util.ArrayList;
 public class Route {
 
     public interface RouteUpdateListener {
+
         void onRouteUpdated(RouteUpdate routeUpdate);
     }
-
     private ArrayList<Split> splits;
+
     private long startTimeInMillis;
     private RouteUpdateListener mListener;
-
     // Pre computed totals
-    private long distanceInMeters;
-    private float pace; // time per km
-    private String speed;
+    private long distanceInMeters; // check this isn't null!!!!!
 
+    private float pace; // time per km
+    private float speed;
     private RouteUpdate lastRouteUpdate;
 
     public Route(RouteUpdateListener listener) {
@@ -28,13 +28,15 @@ public class Route {
     }
 
     private void initialiseTotals() {
-        startTimeInMillis = System.currentTimeMillis();
         distanceInMeters = 0;
         pace = 0;
-        lastRouteUpdate = new RouteUpdate("", 0, 0, 0f); //// FIXME: 18/09/16
+        lastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
     }
 
     public void addSplit(Split split) {
+        if (splits.size() == 0) {
+            startTimeInMillis = System.currentTimeMillis(); // todo - check in future - is this real time!
+        }
         splits.add(split);
         recomputeTotals(split);
         updateListeners();
@@ -52,6 +54,10 @@ public class Route {
         lastRouteUpdate.updateInfo(getSpeed(), getDistance(), getDuration(), getPace());
     }
 
+    public void reset() {
+
+    }
+
     /**
      * Getters
      */
@@ -60,7 +66,7 @@ public class Route {
         return lastRouteUpdate;
     }
 
-    private String getSpeed() {
+    private float getSpeed() {
         return speed;
     }
 

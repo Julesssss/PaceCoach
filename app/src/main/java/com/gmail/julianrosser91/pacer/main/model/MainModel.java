@@ -11,7 +11,6 @@ import java.util.Random;
 
 public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUpdateListener {
 
-    // Presenter reference
     private MainInterfaces.RequiredPresenterOps mPresenter;
     private Handler mHandler;
 
@@ -24,17 +23,6 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
         mRoute = new Route(this);
     }
 
-    /**
-     * Called by Presenter when View is destroyed
-     */
-    @Override
-    public void onDestroy(boolean isChangingConfiguration) {
-        if (!isChangingConfiguration) {
-            stopTrackingService();
-            mPresenter = null;
-        }
-    }
-
     public RouteUpdate getLastRouteUpdate() {
         return mRoute.getLastRouteUpdate();
     }
@@ -45,6 +33,23 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
 
     public MainState getState() {
         return mMainState;
+    }
+
+    @Override
+    public void resetRoute() {
+        stopTrackingService();
+        mRoute.reset();
+    }
+
+    /**
+     * Called by Presenter when View is destroyed
+     */
+    @Override
+    public void onDestroy(boolean isChangingConfiguration) {
+        if (!isChangingConfiguration) {
+            stopTrackingService();
+            mPresenter = null;
+        }
     }
 
     @Override

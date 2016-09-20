@@ -130,10 +130,21 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
         updateViewState();
     }
 
+    @Override
+    public void dumpGpsOptionSelected() {
+        // TODO - dump data into logcat
+    }
+
+    @Override
+    public void resetRouteOptionSelected() {
+        mModel.resetRoute();
+    }
+
     public void updateViewState() {
         if (mView != null && mView.get() != null) {
             mView.get().updateTrackingStatus(mModel.getState());
             mView.get().updateRouteInfo(mModel.getLastRouteUpdate());
         }
     }
+
 }

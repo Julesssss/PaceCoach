@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Speed"
+            android:text="Speed (km/h)"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Distance"
+            android:text="Distance (m)"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Time"
+            android:text="Time (s)"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Pace"
+            android:text="Pace (m/km)"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -109,7 +109,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="10.5 km/s"
             android:textSize="18sp" />
 
         <TextView
@@ -118,7 +117,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="3.45km"
             android:textSize="18sp" />
 
         <TextView
@@ -127,7 +125,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="20:12"
             android:textSize="18sp" />
 
         <TextView
@@ -136,7 +133,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="5:53"
             android:textSize="18sp" />
 
     </LinearLayout>

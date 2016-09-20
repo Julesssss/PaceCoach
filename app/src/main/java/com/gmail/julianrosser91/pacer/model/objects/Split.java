@@ -26,8 +26,8 @@ public class Split {
         return meters;
     }
 
-    public String getKmPerHour() {
-        return "" + PaceUtils.getKmPerHour(seconds * 1000, meters);
+    public float getKmPerHour() {
+        return PaceUtils.getKmPerHour(seconds * 1000, meters);
     }
 
 }

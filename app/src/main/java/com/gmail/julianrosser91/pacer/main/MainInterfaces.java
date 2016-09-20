@@ -40,6 +40,10 @@ public class MainInterfaces {
         void setView(RequiredViewOps view);
 
         void onDestroy(boolean isChangingConfiguration);
+
+        void dumpGpsOptionSelected();
+
+        void resetRouteOptionSelected();
     }
 
     /**
@@ -74,6 +78,8 @@ public class MainInterfaces {
         void updateState(MainState tracking);
 
         MainState getState();
+
+        void resetRoute();
     }
 
 }
