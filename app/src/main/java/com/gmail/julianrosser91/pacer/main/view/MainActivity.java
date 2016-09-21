@@ -2,6 +2,7 @@ package com.gmail.julianrosser91.pacer.main.view;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import com.gmail.julianrosser91.pacer.main.model.MainModel;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
 import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
+import com.gmail.julianrosser91.pacer.model.services.TrackingService;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;
 
 /**
@@ -130,6 +132,11 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
         } else {
             textTrackingState.setTextColor(getResources().getColor(R.color.green));
         }
+    }
+
+    @Override
+    public void startServiceIntent(Intent serviceIntent) {
+        startService(serviceIntent);
     }
 
     @Override

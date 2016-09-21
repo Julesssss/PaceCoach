@@ -1,9 +1,11 @@
 package com.gmail.julianrosser91.pacer.main;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
+import com.gmail.julianrosser91.pacer.model.services.TrackingService;
 
 /**
  * Holder interface that contains all interfaces
@@ -25,6 +27,8 @@ public class MainInterfaces {
         Context getActivityContext();
 
         void updateRouteInfo(RouteUpdate routeUpdate);
+
+        void startServiceIntent(Intent serviceIntent);
     }
 
 
