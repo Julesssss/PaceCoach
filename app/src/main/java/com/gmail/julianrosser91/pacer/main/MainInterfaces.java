@@ -55,10 +55,6 @@ public class MainInterfaces {
      * MODEL > PRESENTER
      */
     public interface RequiredPresenterOps {
-        void onTrackingServiceStarted();
-
-        void onTrackingServiceStopped();
-
         Context getAppContext();
 
         Context getActivityContext();
@@ -71,10 +67,6 @@ public class MainInterfaces {
      * PRESENTER > MODEL
      */
     public interface ProvidedModelOps {
-        void startTrackingService();
-
-        void stopTrackingService();
-
         void onDestroy(boolean isChangingConfiguration);
 
         RouteUpdate getLastRouteUpdate();
@@ -84,6 +76,9 @@ public class MainInterfaces {
         MainState getState();
 
         void resetRoute();
+
+
+        void dumpGpsCoordinateLog();
     }
 
 }

@@ -18,7 +18,6 @@ import com.gmail.julianrosser91.pacer.main.model.MainModel;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
 import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
-import com.gmail.julianrosser91.pacer.model.services.TrackingService;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;
 
 /**
@@ -98,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
             // Set the Presenter as a interface
             // To limit the communication with it
             mPresenter = presenter;
+            mPresenter.updateViewState();
         }
         // get the Presenter from StateMaintainer
         else {

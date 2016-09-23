@@ -1,7 +1,5 @@
 package com.gmail.julianrosser91.pacer.model.objects;
 
-import com.gmail.julianrosser91.pacer.utils.PaceUtils;
-
 public class Split {
 
     long seconds;

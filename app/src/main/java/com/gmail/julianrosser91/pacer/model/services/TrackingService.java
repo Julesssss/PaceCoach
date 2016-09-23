@@ -34,6 +34,8 @@ import java.util.Random;
 public class TrackingService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private static boolean isTracking = false;
+
     // Service Threading handlers todo - simplify?
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
@@ -122,6 +124,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     protected void startLocationUpdates() {
+        isTracking = true;
         // Start listening for location updates
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -136,13 +139,17 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
     private void handleUpdatedLocation(Location location) {
         EventBus.getDefault().post(new LocationEvent(location)); // todo - Should replace with DB?
-        Toast.makeText(getApplicationContext(), "Loc update: " + location.getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     public void stopTrackingLocation() {
         if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.disconnect();
         }
+        isTracking = false;
+    }
+
+    public static boolean getIsTracking() {
+        return isTracking;
     }
 
     /**
@@ -151,6 +158,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     @Subscribe
     public void stopService(StopServiceEvent event) {
         stopTrackingLocation();
+        stopRepeatingTask();
         stopSelf();
     }
 
@@ -159,9 +167,13 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // shared pref
+//        if (realData) {
+            startLocationUpdates();
+//        } else {
+//            startReturningFakeLocationData();
+//        }
         Log.i(getClass().getSimpleName(), "onGoogleAPiConnected");
-        startLocationUpdates();
-        startReturningFakeLocationData();
     }
 
     @Override
@@ -192,8 +204,6 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         int r = new Random().nextInt(20);
         double v = new Random().nextDouble() * 10;
 
-        long meters = (long) (v + r);
-
         Location fakeLocation = new Location("provider");
         fakeLocation.setTime(System.currentTimeMillis());
 
@@ -202,7 +212,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
         fakeLocation.setLatitude(d);
         fakeLocation.setLongitude(e);
-
+        fakeLocation.setSpeed(new Random().nextFloat() * 15);
 
         EventBus.getDefault().post(new LocationEvent(fakeLocation));
     }
