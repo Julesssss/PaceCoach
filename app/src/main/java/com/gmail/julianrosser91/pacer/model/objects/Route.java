@@ -5,24 +5,19 @@ import android.location.Location;
 import com.gmail.julianrosser91.pacer.utils.PaceUtils;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Route {
 
-    private ArrayList<Location> locations;
-    private ArrayList<Split> splits;
-    private long startTimeInMillis;
+    private ArrayList<Location> mLocations;
+    private ArrayList<Split> mSplits;
+    private long mStartTimeInMillis;
     private RouteUpdateListener mListener;
 
     // Pre computed totals
-    private long distanceInMeters;
-    private float pace; // time per km
-    private float speed;
-    private RouteUpdate lastRouteUpdate;
-
-    public Route() {
-        initialiseTotals();
-    }
+    private long mDistanceInMeters;
+    private float mCurrentPace; // time per km
+    private float mCurrentSpeed;
+    private RouteUpdate mLastRouteUpdate;
 
     public Route(RouteUpdateListener listener) {
         initialiseTotals();
@@ -30,44 +25,44 @@ public class Route {
     }
 
     private void initialiseTotals() {
-        this.locations = new ArrayList<>();
-        this.splits = new ArrayList<>();
-        distanceInMeters = 0;
-        pace = 0;
-        speed = 0;
-        lastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
+        this.mLocations = new ArrayList<>();
+        this.mSplits = new ArrayList<>();
+        mDistanceInMeters = 0;
+        mCurrentPace = 0;
+        mCurrentSpeed = 0;
+        mLastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
     }
 
     public void addLocation(Location location) {
-        if (locations.size() == 0) {
-            startTimeInMillis = System.currentTimeMillis(); // todo - check in future - is this real time!
+        if (mLocations.size() == 0) {
+            mStartTimeInMillis = location.getTime();
         }
-        locations.add(location);
+        mLocations.add(location);
         createSplitFromLastLocations();
     }
 
     public void addSplit(Split split) {
-        splits.add(split);
+        mSplits.add(split);
         recomputeTotals(split);
         updateListeners();
     }
 
     private void updateListeners() {
-        RouteUpdate routeUpdate = new RouteUpdate(getSpeed(), getDistance(), getDuration(), getPace());
+        RouteUpdate routeUpdate = new RouteUpdate(getCurrentSpeed(), getDistance(), getDuration(), getCurrentPace());
         if (mListener != null) {
             mListener.onRouteUpdated(routeUpdate);
         }
     }
 
     private void recomputeTotals(Split split) {
-        distanceInMeters += split.getMeters();
-        speed = split.getKmPerHour();
-        pace = PaceUtils.getPace(getDistance(), getDuration());
-        lastRouteUpdate.updateInfo(getSpeed(), getDistance(), getDuration(), getPace());
+        mDistanceInMeters += split.getMeters();
+        mCurrentSpeed = split.getKmPerHour();
+        mCurrentPace = PaceUtils.getPace(getDistance(), getDuration());
+        mLastRouteUpdate.updateInfo(getCurrentSpeed(), getDistance(), getDuration(), getCurrentPace());
     }
 
     public void reset() {
-        splits.clear();
+        mSplits.clear();
         initialiseTotals();
         updateListeners();
     }
@@ -77,36 +72,39 @@ public class Route {
      */
 
     public RouteUpdate getLastRouteUpdate() {
-        return lastRouteUpdate;
+        return mLastRouteUpdate;
     }
 
-    private float getSpeed() {
-        return speed;
+    private float getCurrentSpeed() {
+        return mCurrentSpeed;
     }
 
     private long getDuration() {
-        if (splits.size() != 0) {
-            return System.currentTimeMillis() - startTimeInMillis;
+        if (mSplits.size() != 0) {
+            return System.currentTimeMillis() - mStartTimeInMillis;
         } else return 0;
     }
 
-    private long getDistance() {
-        return distanceInMeters;
+    public ArrayList<Location> getLocations() {
+        return mLocations;
     }
 
-    private float getPace() {
-        return pace;
+    private long getDistance() {
+        return mDistanceInMeters;
+    }
+
+    private float getCurrentPace() {
+        return mCurrentPace;
     }
 
     private void createSplitFromLastLocations() {
-        int locationCount = locations.size();
+        int locationCount = mLocations.size();
         if (locationCount > 1) {
-            Location locationA = locations.get(locationCount - 2);
-            Location locationB = locations.get(locationCount - 1);
+            Location locationA = mLocations.get(locationCount - 2);
+            Location locationB = mLocations.get(locationCount - 1);
             long meters = (long) locationA.distanceTo(locationB);
             long seconds = locationB.getTime() - locationA.getTime();
-            float speed = new Random().nextFloat() * 15;
-            addSplit(new Split(meters, seconds, speed));
+            addSplit(new Split(meters, seconds, locationB.getSpeed()));
         }
     }
 
