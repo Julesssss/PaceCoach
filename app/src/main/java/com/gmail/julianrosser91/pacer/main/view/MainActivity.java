@@ -135,6 +135,11 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     }
 
     @Override
+    public void startActivityIntent(Intent serviceIntent) {
+        startActivity(serviceIntent);
+    }
+
+    @Override
     public void startServiceIntent(Intent serviceIntent) {
         startService(serviceIntent);
     }
@@ -186,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
             mPresenter.dumpGpsOptionSelected();
             return true;
         } else if (id == R.id.action_settings) {
+            mPresenter.settingsButtonPressed();
             return true;
         }
 

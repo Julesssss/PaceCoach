@@ -24,11 +24,13 @@ public class MainInterfaces {
 
         void updateTrackingStatus(MainState status);
 
+        void startActivityIntent(Intent activityIntent);
+
+        void startServiceIntent(Intent serviceIntent);
+
         Context getActivityContext();
 
         void updateRouteInfo(RouteUpdate routeUpdate);
-
-        void startServiceIntent(Intent serviceIntent);
     }
 
 

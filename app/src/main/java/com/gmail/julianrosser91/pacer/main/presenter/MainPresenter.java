@@ -2,13 +2,13 @@ package com.gmail.julianrosser91.pacer.main.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.model.services.TrackingService;
+import com.gmail.julianrosser91.pacer.settings.view.SettingsActivity;
 import com.gmail.julianrosser91.pacer.utils.PermissionHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -115,12 +115,9 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     @Override
     public void clickStartTrackingButton() {
         if (PermissionHelper.isLocationPermissionEnabled(getAppContext())) {
-            Intent intent = new Intent(mView.get().getActivityContext(), TrackingService.class);
-            intent.putExtra("REALDATA", true);
-            mView.get().startServiceIntent(intent);
+            mView.get().startServiceIntent(new Intent(mView.get().getActivityContext(), TrackingService.class));
             mModel.updateState(MainState.TRACKING);
             updateViewState();
-            Log.i(getClass().getSimpleName(), "start tracking...");
         } else {
             PermissionHelper.askForLocationPermission(getActivityContext());
         }
@@ -131,9 +128,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
         EventBus.getDefault().post(new StopServiceEvent());
         mModel.updateState(MainState.STOPPED);
         updateViewState();
-        Log.i(getClass().getSimpleName(), "stop tracking...");
     }
-
 
     @Override
     public void dumpGpsOptionSelected() {
@@ -156,4 +151,8 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
         }
     }
 
+    public void settingsButtonPressed() {
+        Intent settingsIntent = new Intent(getActivityContext(), SettingsActivity.class);
+        mView.get().startActivityIntent(settingsIntent);
+    }
 }
