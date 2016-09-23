@@ -1,11 +1,17 @@
 package com.gmail.julianrosser91.pacer.main.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
+import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
+import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
+import com.gmail.julianrosser91.pacer.model.services.TrackingService;
+import com.gmail.julianrosser91.pacer.utils.PermissionHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
 
@@ -108,40 +114,43 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
 
     @Override
     public void clickStartTrackingButton() {
-        Log.i(getClass().getSimpleName(), "start tracking...");
-        mModel.startTrackingService();
+        if (PermissionHelper.isLocationPermissionEnabled(getAppContext())) {
+            Intent intent = new Intent(mView.get().getActivityContext(), TrackingService.class);
+            intent.putExtra("REALDATA", true);
+            mView.get().startServiceIntent(intent);
+            mModel.updateState(MainState.TRACKING);
+            updateViewState();
+            Log.i(getClass().getSimpleName(), "start tracking...");
+        } else {
+            PermissionHelper.askForLocationPermission(getActivityContext());
+        }
     }
 
     @Override
     public void clickStopTrackingButton() {
-        mModel.stopTrackingService();
+        EventBus.getDefault().post(new StopServiceEvent());
+        mModel.updateState(MainState.STOPPED);
+        updateViewState();
         Log.i(getClass().getSimpleName(), "stop tracking...");
     }
 
-    @Override
-    public void onTrackingServiceStarted() {
-        mModel.updateState(MainState.TRACKING);
-        updateViewState();
-    }
-
-    @Override
-    public void onTrackingServiceStopped() {
-        mModel.updateState(MainState.STOPPED);
-        updateViewState();
-    }
 
     @Override
     public void dumpGpsOptionSelected() {
-        // TODO - dump data into logcat
+        mModel.dumpGpsCoordinateLog();
     }
 
     @Override
     public void resetRouteOptionSelected() {
+        EventBus.getDefault().post(new StopServiceEvent());
+        mModel.updateState(MainState.STOPPED);
         mModel.resetRoute();
+        updateViewState();
     }
 
     public void updateViewState() {
-        if (mView != null && mView.get() != null) {
+        // Press back and re-open. Service still running. FInd instance? Or stop and re-start????
+        if (mView != null && mView.get() != null && mModel != null) {
             mView.get().updateTrackingStatus(mModel.getState());
             mView.get().updateRouteInfo(mModel.getLastRouteUpdate());
         }

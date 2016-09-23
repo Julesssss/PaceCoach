@@ -1,5 +1,6 @@
 package com.gmail.julianrosser91.pacer.model.services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,8 +18,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
-import com.gmail.julianrosser91.pacer.model.events.UpdateTrackedRouteEvent;
-import com.gmail.julianrosser91.pacer.model.objects.TrackedRoute;
+import com.gmail.julianrosser91.pacer.model.events.LocationEvent;
+import com.gmail.julianrosser91.pacer.model.objects.Split;
 import com.gmail.julianrosser91.pacer.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,25 +29,27 @@ import com.google.android.gms.location.LocationServices;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Random;
+
 public class TrackingService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
+    private static boolean isTracking = false;
 
     // Service Threading handlers todo - simplify?
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
 
     // Object references
-    private TrackedRoute trackedRoute;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private long mLastUpdatedTimeMillis;
-
     public TrackingService() {
 
     }
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
+
         public ServiceHandler(Looper looper) {
             super(looper);
         }
@@ -55,8 +58,8 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
             setUpLocationListener();
             startTrackingLocation();
         }
-    }
 
+    }
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -65,7 +68,6 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onCreate() {
         EventBus.getDefault().register(this);
-        trackedRoute = new TrackedRoute();
 
         // Start up the thread running the service.  Note that we create a
         // separate thread because the service normally runs in the process's
@@ -77,8 +79,6 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         // Get the HandlerThread's Looper and use it for our Handler
         mServiceLooper = thread.getLooper();
         mServiceHandler = new ServiceHandler(mServiceLooper);
-
-        Toast.makeText(this, "Tracking started", Toast.LENGTH_SHORT).show();
 
         // Send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -124,48 +124,41 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     protected void startLocationUpdates() {
-        // Permission check
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            Toast.makeText(TrackingService.this, "NO PERMISSION", Toast.LENGTH_SHORT).show();
-//           // todo --------> askForLocationPermission();
-            return;
-        }
+        isTracking = true;
         // Start listening for location updates
-        LocationServices.FusedLocationApi.requestLocationUpdates(
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
                         handleUpdatedLocation(location);
-                        Log.i(getClass().getSimpleName(), "Loc: " + location.getLatitude() + " | " + location.getLongitude());
                     }
                 });
+            }
     }
 
     private void handleUpdatedLocation(Location location) {
-        // if location differs from last
-        if (trackedRoute.locationDiffersFromLast(location)) {
-            trackedRoute.addLocation(location);
-            mLastUpdatedTimeMillis = System.currentTimeMillis();
-            EventBus.getDefault().post(new UpdateTrackedRouteEvent(trackedRoute));
-        }
+        EventBus.getDefault().post(new LocationEvent(location)); // todo - Should replace with DB?
     }
 
     public void stopTrackingLocation() {
         if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.disconnect();
         }
+        isTracking = false;
+    }
+
+    public static boolean getIsTracking() {
+        return isTracking;
     }
 
     /**
      * Event listeners
      */
-
     @Subscribe
     public void stopService(StopServiceEvent event) {
         stopTrackingLocation();
+        stopRepeatingTask();
         stopSelf();
     }
 
@@ -174,8 +167,13 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // shared pref
+//        if (realData) {
+            startLocationUpdates();
+//        } else {
+//            startReturningFakeLocationData();
+//        }
         Log.i(getClass().getSimpleName(), "onGoogleAPiConnected");
-        startLocationUpdates();
     }
 
     @Override
@@ -187,5 +185,59 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(getClass().getSimpleName(), "onConnectionFailed");
     }
+
+    /**
+     * Temporary method for supplying sample location data
+     */
+    private Handler mHandler;
+
+    private void startReturningFakeLocationData() {
+        if (mHandler != null) {
+            mHandler.removeCallbacks(fakePaceGenerater);
+        } else {
+            mHandler = new Handler();
+        }
+        startRepeatingTask();
+    }
+
+    private void generateFakeLocation() {
+        int r = new Random().nextInt(20);
+        double v = new Random().nextDouble() * 10;
+
+        Location fakeLocation = new Location("provider");
+        fakeLocation.setTime(System.currentTimeMillis());
+
+        double d = (new Random().nextDouble() / 1000) + 55.555;
+        double e = (new Random().nextDouble() / 1000) + 4.444;
+
+        fakeLocation.setLatitude(d);
+        fakeLocation.setLongitude(e);
+        fakeLocation.setSpeed(new Random().nextFloat() * 15);
+
+        EventBus.getDefault().post(new LocationEvent(fakeLocation));
+    }
+
+    void startRepeatingTask() {
+        fakePaceGenerater.run();
+    }
+
+    void stopRepeatingTask() {
+        if (mHandler != null) {
+            mHandler.removeCallbacks(fakePaceGenerater);
+        }
+    }
+
+    Runnable fakePaceGenerater = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                generateFakeLocation();
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(fakePaceGenerater, 3000);
+            }
+        }
+    };
 
 }

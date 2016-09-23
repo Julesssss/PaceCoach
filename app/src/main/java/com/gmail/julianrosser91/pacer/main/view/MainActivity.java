@@ -2,6 +2,7 @@ package com.gmail.julianrosser91.pacer.main.view;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
             // Set the Presenter as a interface
             // To limit the communication with it
             mPresenter = presenter;
+            mPresenter.updateViewState();
         }
         // get the Presenter from StateMaintainer
         else {
@@ -130,6 +132,11 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
         } else {
             textTrackingState.setTextColor(getResources().getColor(R.color.green));
         }
+    }
+
+    @Override
+    public void startServiceIntent(Intent serviceIntent) {
+        startService(serviceIntent);
     }
 
     @Override

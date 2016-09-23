@@ -1,21 +1,20 @@
 package com.gmail.julianrosser91.pacer.model.objects;
 
-import com.gmail.julianrosser91.pacer.utils.PaceUtils;
-
 public class Split {
 
     long seconds;
     long meters;
+    float speed;
 
-
-    public Split() {
+    public Split(long meters, long seconds) {
         this.seconds = 0;
         this.meters = 0;
     }
 
-    public Split(long meters, long seconds) {
+    public Split(long meters, long seconds, float speed) {
         this.seconds = seconds;
         this.meters = meters;
+        this.speed = speed;
     }
 
     public long getSeconds() {
@@ -27,7 +26,7 @@ public class Split {
     }
 
     public float getKmPerHour() {
-        return PaceUtils.getKmPerHour(seconds * 1000, meters);
+        return speed;
     }
 
 }

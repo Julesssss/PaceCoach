@@ -1,13 +1,18 @@
 package com.gmail.julianrosser91.pacer.main.model;
 
+import android.location.Location;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.gmail.julianrosser91.pacer.main.MainInterfaces;
+import com.gmail.julianrosser91.pacer.model.events.LocationEvent;
 import com.gmail.julianrosser91.pacer.model.objects.Route;
 import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
-import com.gmail.julianrosser91.pacer.model.objects.Split;
-import com.gmail.julianrosser91.pacer.main.MainInterfaces;
+import com.gmail.julianrosser91.pacer.model.services.TrackingService;
 
-import java.util.Random;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUpdateListener {
 
@@ -21,6 +26,18 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     public MainModel(MainInterfaces.RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
         mRoute = new Route(this);
+        checkTrackingStatus();
+        EventBus.getDefault().register(this);
+    }
+
+    /**
+     * todo - If Service is still running, we should re-load current route data. ((DATABASE))
+     */
+    private void checkTrackingStatus() {
+        if (TrackingService.getIsTracking()) {
+            mMainState = MainState.TRACKING;
+
+        }
     }
 
     public RouteUpdate getLastRouteUpdate() {
@@ -37,8 +54,16 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
 
     @Override
     public void resetRoute() {
-        stopTrackingService();
         mRoute.reset();
+    }
+
+    @Override
+    public void dumpGpsCoordinateLog() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Location l : mRoute.getLocations()) {
+            stringBuilder.append(l.getLatitude() + ", " + l.getLongitude() + "\n");
+        }
+        Log.i(getClass().getSimpleName(), stringBuilder.toString());
     }
 
     /**
@@ -46,71 +71,21 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
      */
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
+        EventBus.getDefault().unregister(this);
         if (!isChangingConfiguration) {
-            stopTrackingService();
             mPresenter = null;
         }
     }
 
-    @Override
-    public void startTrackingService() {
-        mPresenter.onTrackingServiceStarted();
-        startReturningFakeLocationData();
-    }
-
-    @Override
-    public void stopTrackingService() {
-        mPresenter.onTrackingServiceStopped();
-        stopRepeatingTask();
+    @Subscribe
+    public void onLocationEvent(LocationEvent event) {
+        mRoute.addLocation(event.getLocation());
+        Toast.makeText(mPresenter.getAppContext(), "Location: " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRouteUpdated(RouteUpdate routeUpdate) {
         mPresenter.onRouteUpdated(routeUpdate);
     }
-
-    /**
-     * Temporary method for supplying sample location data
-     */
-    private void startReturningFakeLocationData() {
-        if (mHandler != null) {
-            mHandler.removeCallbacks(fakePaceGenerater);
-        } else {
-            mHandler = new Handler();
-        }
-        startRepeatingTask();
-    }
-
-    private void generateFakePace() {
-        int r = new Random().nextInt(20);
-        double v = new Random().nextDouble() * 10;
-
-        long meters = (long) (v + r);
-        Split split = new Split(meters, 3);
-        mRoute.addSplit(split);
-    }
-
-    void startRepeatingTask() {
-        fakePaceGenerater.run();
-    }
-
-    void stopRepeatingTask() {
-        if (mHandler != null) {
-            mHandler.removeCallbacks(fakePaceGenerater);
-        }
-    }
-
-    Runnable fakePaceGenerater = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                generateFakePace();
-            } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                mHandler.postDelayed(fakePaceGenerater, 3000);
-            }
-        }
-    };
 
 }
