@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.model.events;
+package com.gmail.julianrosser91.pacer.data.events;
 
 import android.content.Intent;
 

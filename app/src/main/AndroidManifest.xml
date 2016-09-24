@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:name=".model.services.TrackingService"
+            android:name=".data.services.TrackingService"
             android:exported="false" />
 
         <activity

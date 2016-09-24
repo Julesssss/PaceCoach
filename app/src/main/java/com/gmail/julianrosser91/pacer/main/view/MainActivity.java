@@ -17,7 +17,7 @@ import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainModel;
 import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
-import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
+import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;
 
 /**

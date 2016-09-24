@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.R;
 import com.gmail.julianrosser91.pacer.main.view.MainActivity;
-import com.gmail.julianrosser91.pacer.model.events.IntentCallback;
-import com.gmail.julianrosser91.pacer.model.objects.TrackedRoute;
+import com.gmail.julianrosser91.pacer.data.events.IntentCallback;
+import com.gmail.julianrosser91.pacer.data.model.TrackedRoute;
 
 import java.util.ArrayList;
 import java.util.List;
