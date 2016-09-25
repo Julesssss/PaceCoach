@@ -20,7 +20,8 @@ import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
-import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
+import com.gmail.julianrosser91.pacer.data.events.RouteUpdateEvent;
+import com.gmail.julianrosser91.pacer.data.model.Route;
 import com.gmail.julianrosser91.pacer.utils.Constants;
 import com.gmail.julianrosser91.pacer.utils.NotificationHelper;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,13 +39,11 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
     private static boolean isTracking = false;
 
-    // Service Threading handlers todo - simplify?
-    private Looper mServiceLooper;
-    private ServiceHandler mServiceHandler;
-
     // Object references
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private Route trackedRoute;
+
     public TrackingService() {
 
     }
@@ -79,13 +78,15 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         thread.start();
 
         // Get the HandlerThread's Looper and use it for our Handler
-        mServiceLooper = thread.getLooper();
-        mServiceHandler = new ServiceHandler(mServiceLooper);
+        Looper mServiceLooper = thread.getLooper();
+        ServiceHandler mServiceHandler = new ServiceHandler(mServiceLooper);
 
         // Send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
         Message msg = mServiceHandler.obtainMessage();
         mServiceHandler.sendMessage(msg);
+
+        trackedRoute = new Route();
     }
 
     @Override
@@ -140,10 +141,11 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     private void handleUpdatedLocation(Location location) {
-        // Save to DB
+        trackedRoute.addLocation(location);
         Pacer.getRoutesDatabase(this).addLocationToDatabase(location);
-        EventBus.getDefault().post(new LocationEvent(location));
-        NotificationHelper.showTrackingNotification(this, NotificationHelper.getMessageFromLocation());
+        EventBus.getDefault().post(new RouteUpdateEvent(trackedRoute.getLastRouteUpdate()));
+        NotificationHelper.showNotification(this, NotificationHelper.getMessageFromLocation(
+                trackedRoute.getLastRouteUpdate()));
     }
 
     public void stopTrackingLocation() {
@@ -219,9 +221,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         fakeLocation.setLongitude(e);
         fakeLocation.setSpeed(new Random().nextFloat() * 15);
 
-        Pacer.getRoutesDatabase(this).addLocationToDatabase(fakeLocation);
-        EventBus.getDefault().post(new LocationEvent(fakeLocation));
-        NotificationHelper.showTrackingNotification(this, NotificationHelper.getMessageFromLocation());
+        handleUpdatedLocation(fakeLocation);
     }
 
     void startRepeatingTask() {

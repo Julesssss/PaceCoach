@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.gmail.julianrosser91.pacer.R;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
 import com.gmail.julianrosser91.pacer.main.model.MainModel;
-import com.gmail.julianrosser91.pacer.main.model.MainState;
+import com.gmail.julianrosser91.pacer.main.model.MainModel.MainState;
 import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;

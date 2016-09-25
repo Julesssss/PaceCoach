@@ -48,14 +48,6 @@ public class Route {
     private void addSplit(Split split) {
         mSplits.add(split);
         recomputeTotals(split);
-        updateListeners();
-    }
-
-    private void updateListeners() {
-        RouteUpdate routeUpdate = new RouteUpdate(getCurrentSpeed(), getDistance(), getDuration(), getCurrentPace());
-        if (mListener != null) {
-            mListener.onRouteUpdated(routeUpdate);
-        }
     }
 
     private void recomputeTotals(Split split) {
@@ -68,7 +60,6 @@ public class Route {
     public void reset() {
         mSplits.clear();
         initialiseTotals();
-        updateListeners();
     }
 
     /**

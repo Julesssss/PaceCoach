@@ -3,7 +3,7 @@ package com.gmail.julianrosser91.pacer.main.model;
 import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.Pacer;
-import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
+import com.gmail.julianrosser91.pacer.data.events.RouteUpdateEvent;
 import com.gmail.julianrosser91.pacer.data.model.Route;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
@@ -13,16 +13,20 @@ import com.gmail.julianrosser91.pacer.main.MainInterfaces.RequiredPresenterOps;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUpdateListener {
+public class MainModel implements MainInterfaces.ProvidedModelOps{
+
+    public enum MainState {
+        TRACKING,
+        STOPPED
+    }
 
     private RequiredPresenterOps mPresenter;
-    private Route mRoute;
+    private RouteUpdate lastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
 
     private MainState mMainState = MainState.STOPPED;
 
     public MainModel(RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
-        mRoute = new Route(this);
         checkTrackingStatus();
         EventBus.getDefault().register(this);
     }
@@ -37,7 +41,7 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     }
 
     public RouteUpdate getLastRouteUpdate() {
-        return mRoute.getLastRouteUpdate();
+        return lastRouteUpdate;
     }
 
     public void updateState(MainState state) {
@@ -46,17 +50,6 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
 
     public MainState getState() {
         return mMainState;
-    }
-
-    @Override
-    public void resetRoute() {
-        mRoute.reset();
-        Pacer.getRoutesDatabase(mPresenter.getActivityContext()).deleteTable();
-    }
-
-    @Override
-    public void dumpGpsCoordinateLog() {
-        Pacer.getRoutesDatabase(mPresenter.getActivityContext()).printDatabaseData();
     }
 
     /**
@@ -71,15 +64,10 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     }
 
     @Subscribe
-    public void onLocationEvent(LocationEvent event) {
-        mRoute.addLocation(event.getLocation());
-        Toast.makeText(mPresenter.getAppContext(), event.getLocation().getLatitude() + " || " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
-    }
-
-    // Callback from Route object
-    @Override
-    public void onRouteUpdated(RouteUpdate routeUpdate) {
-        mPresenter.onRouteUpdated(routeUpdate);
+    public void onLocationEvent(RouteUpdateEvent event) {
+        lastRouteUpdate = event.getRouteUpdate();
+        mPresenter.onRouteUpdated(lastRouteUpdate);
+        Toast.makeText(mPresenter.getAppContext(), event.getRouteUpdate().getSpeed() + "km/s || " + event.getRouteUpdate().getDistanceKms() + "km", Toast.LENGTH_SHORT).show();
     }
 
 }

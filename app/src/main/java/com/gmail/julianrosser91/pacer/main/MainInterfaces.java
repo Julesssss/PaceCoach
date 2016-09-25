@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
-import com.gmail.julianrosser91.pacer.main.model.MainState;
+import com.gmail.julianrosser91.pacer.main.model.MainModel;
+import com.gmail.julianrosser91.pacer.main.model.MainModel.MainState;
 
 /**
  * Holder interface that contains all interfaces
@@ -75,11 +76,6 @@ public class MainInterfaces {
         void updateState(MainState tracking);
 
         MainState getState();
-
-        void resetRoute();
-
-
-        void dumpGpsCoordinateLog();
     }
 
 }

@@ -3,8 +3,9 @@ package com.gmail.julianrosser91.pacer.main.presenter;
 import android.content.Context;
 import android.content.Intent;
 
+import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
-import com.gmail.julianrosser91.pacer.main.model.MainState;
+import com.gmail.julianrosser91.pacer.main.model.MainModel.MainState;
 import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
@@ -134,14 +135,14 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
 
     @Override
     public void dumpGpsOptionSelected() {
-        mModel.dumpGpsCoordinateLog();
+        Pacer.getRoutesDatabase(getActivityContext()).deleteTable();
     }
 
     @Override
     public void resetRouteOptionSelected() {
         EventBus.getDefault().post(new StopServiceEvent());
         mModel.updateState(MainState.STOPPED);
-        mModel.resetRoute();
+        Pacer.getRoutesDatabase(getActivityContext()).deleteTable();
         updateViewState();
     }
 
