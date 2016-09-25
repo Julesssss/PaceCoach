@@ -51,12 +51,12 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     @Override
     public void resetRoute() {
         mRoute.reset();
-        Pacer.getRoutesDatabase().deleteTable();
+        Pacer.getRoutesDatabase(mPresenter.getActivityContext()).deleteTable();
     }
 
     @Override
     public void dumpGpsCoordinateLog() {
-        Pacer.getRoutesDatabase().printDatabaseData();
+        Pacer.getRoutesDatabase(mPresenter.getActivityContext()).printDatabaseData();
     }
 
     /**

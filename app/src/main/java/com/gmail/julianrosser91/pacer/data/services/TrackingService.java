@@ -22,6 +22,7 @@ import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
 import com.gmail.julianrosser91.pacer.utils.Constants;
+import com.gmail.julianrosser91.pacer.utils.NotificationHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -140,8 +141,9 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
     private void handleUpdatedLocation(Location location) {
         // Save to DB
-        Pacer.getRoutesDatabase().addLocationToDatabase(location);
+        Pacer.getRoutesDatabase(this).addLocationToDatabase(location);
         EventBus.getDefault().post(new LocationEvent(location));
+        NotificationHelper.showTrackingNotification(this, NotificationHelper.getMessageFromLocation());
     }
 
     public void stopTrackingLocation() {
@@ -217,8 +219,9 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         fakeLocation.setLongitude(e);
         fakeLocation.setSpeed(new Random().nextFloat() * 15);
 
-        Pacer.getRoutesDatabase().addLocationToDatabase(fakeLocation);
+        Pacer.getRoutesDatabase(this).addLocationToDatabase(fakeLocation);
         EventBus.getDefault().post(new LocationEvent(fakeLocation));
+        NotificationHelper.showTrackingNotification(this, NotificationHelper.getMessageFromLocation());
     }
 
     void startRepeatingTask() {

@@ -9,6 +9,7 @@ import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
 import com.gmail.julianrosser91.pacer.settings.SettingsActivity;
+import com.gmail.julianrosser91.pacer.utils.NotificationHelper;
 import com.gmail.julianrosser91.pacer.utils.PermissionHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -116,6 +117,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     public void clickStartTrackingButton() {
         if (PermissionHelper.isLocationPermissionEnabled(getAppContext())) {
             mView.get().startServiceIntent(new Intent(mView.get().getActivityContext(), TrackingService.class));
+            NotificationHelper.showTrackingNotification(getAppContext(), "TRACKING - 3.9km / 19:12");
             mModel.updateState(MainState.TRACKING);
             updateViewState();
         } else {
@@ -126,6 +128,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     @Override
     public void clickStopTrackingButton() {
         EventBus.getDefault().post(new StopServiceEvent());
+        NotificationHelper.removeTrackingNotification(getAppContext());
         mModel.updateState(MainState.STOPPED);
         updateViewState();
     }
