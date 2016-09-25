@@ -135,7 +135,7 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
 
     @Override
     public void dumpGpsOptionSelected() {
-        Pacer.getRoutesDatabase(getActivityContext()).deleteTable();
+        Pacer.getRoutesDatabase(getActivityContext()).printDatabaseData();
     }
 
     @Override

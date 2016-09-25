@@ -22,8 +22,17 @@ public class RoutesDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Routes.db";
 
-    public RoutesDbHelper(Context context) {
+    private static RoutesDbHelper mInstance = null;
+
+    private RoutesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static RoutesDbHelper getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new RoutesDbHelper(context);
+        }
+        return mInstance;
     }
 
     @Override

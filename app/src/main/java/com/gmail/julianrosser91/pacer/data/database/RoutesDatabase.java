@@ -14,7 +14,7 @@ public class RoutesDatabase {
     private RoutesDbHelper mDbHelper;
 
     public RoutesDatabase(Context context) {
-        mDbHelper = new RoutesDbHelper(context);
+        mDbHelper = RoutesDbHelper.getInstance(context);
         mDatabase = mDbHelper.getWritableDatabase();
     }
 
