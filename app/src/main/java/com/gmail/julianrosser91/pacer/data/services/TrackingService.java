@@ -205,14 +205,11 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     private void generateFakeLocation() {
-        int r = new Random().nextInt(20);
-        double v = new Random().nextDouble() * 10;
-
         Location fakeLocation = new Location("provider");
         fakeLocation.setTime(System.currentTimeMillis());
 
-        double d = (new Random().nextDouble() / 1000) + 55.555;
-        double e = (new Random().nextDouble() / 1000) + 4.444;
+        double d = (new Random().nextDouble() / 1000) + 51.510;
+        double e = (new Random().nextDouble() / 1000) + (-0.127);
 
         fakeLocation.setLatitude(d);
         fakeLocation.setLongitude(e);

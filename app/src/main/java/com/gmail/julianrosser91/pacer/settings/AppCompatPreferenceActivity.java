@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.settings.view;
+package com.gmail.julianrosser91.pacer.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

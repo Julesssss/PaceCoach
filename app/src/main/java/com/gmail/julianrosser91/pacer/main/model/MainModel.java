@@ -79,7 +79,7 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     @Subscribe
     public void onLocationEvent(LocationEvent event) {
         mRoute.addLocation(event.getLocation());
-        Toast.makeText(mPresenter.getAppContext(), "Location: " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mPresenter.getAppContext(), event.getLocation().getLatitude() + " || " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

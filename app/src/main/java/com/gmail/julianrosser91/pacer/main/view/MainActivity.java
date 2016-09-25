@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     }
 
     @Override
-    public void startActivityIntent(Intent serviceIntent) {
-        startActivity(serviceIntent);
+    public void startActivityIntent(Intent activityIntent) {
+        startActivity(activityIntent);
     }
 
     @Override

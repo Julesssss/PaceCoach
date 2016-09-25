@@ -8,7 +8,7 @@ import com.gmail.julianrosser91.pacer.main.model.MainState;
 import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
-import com.gmail.julianrosser91.pacer.settings.view.SettingsActivity;
+import com.gmail.julianrosser91.pacer.settings.SettingsActivity;
 import com.gmail.julianrosser91.pacer.utils.PermissionHelper;
 
 import org.greenrobot.eventbus.EventBus;
