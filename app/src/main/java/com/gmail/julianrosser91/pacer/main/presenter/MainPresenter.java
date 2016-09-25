@@ -117,7 +117,6 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     public void clickStartTrackingButton() {
         if (PermissionHelper.isLocationPermissionEnabled(getAppContext())) {
             mView.get().startServiceIntent(new Intent(mView.get().getActivityContext(), TrackingService.class));
-            NotificationHelper.showTrackingNotification(getAppContext(), "TRACKING - 3.9km / 19:12");
             mModel.updateState(MainState.TRACKING);
             updateViewState();
         } else {

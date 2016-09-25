@@ -7,13 +7,14 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.gmail.julianrosser91.pacer.R;
+import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.main.view.MainActivity;
 
 public class NotificationHelper {
 
     public static int TRACKING_ID = 100;
 
-    public static void showTrackingNotification(Context context, String message) {
+    public static void showNotification(Context context, String message) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_run_notification)
@@ -41,8 +42,9 @@ public class NotificationHelper {
         mNotificationManager.cancel(TRACKING_ID);
     }
 
-    public static String getMessageFromLocation() {
-        return "3.9km - Time: 18:34 - Pace: 6:04";
+    public static String getMessageFromLocation(RouteUpdate lastRouteUpdate) {
+        return lastRouteUpdate.getDistanceKms() + "km - Time: " +
+                lastRouteUpdate.getDuration() + " - Pace: " + lastRouteUpdate.getPace();
     }
 
 }

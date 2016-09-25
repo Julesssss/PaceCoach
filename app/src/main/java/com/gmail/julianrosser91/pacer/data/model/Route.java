@@ -19,6 +19,10 @@ public class Route {
     private float mCurrentSpeed;
     private RouteUpdate mLastRouteUpdate;
 
+    public Route() {
+        initialiseTotals();
+    }
+
     public Route(RouteUpdateListener listener) {
         initialiseTotals();
         this.mListener = listener;
@@ -41,7 +45,7 @@ public class Route {
         createSplitFromLastLocations();
     }
 
-    public void addSplit(Split split) {
+    private void addSplit(Split split) {
         mSplits.add(split);
         recomputeTotals(split);
         updateListeners();

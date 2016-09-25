@@ -1,5 +1,6 @@
 package com.gmail.julianrosser91.pacer.data.model;
 
+import com.gmail.julianrosser91.pacer.utils.DistanceUtils;
 import com.gmail.julianrosser91.pacer.utils.TimeUtils;
 
 public class RouteUpdate {
@@ -24,8 +25,12 @@ public class RouteUpdate {
         return "" + Math.round(speed * 1000f) / 1000f;
     }
 
-    public String getDistance() {
+    public String getDistanceMeters() {
         return "" + distance;
+    }
+
+    public String getDistanceKms() {
+        return DistanceUtils.getKmFromMeters(distance);
     }
 
     public String getDuration() {

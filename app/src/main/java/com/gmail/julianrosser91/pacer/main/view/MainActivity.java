@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
             textLastSpeed.setText(routeUpdate.getSpeed());
         }
         if (textTotalDistance != null) {
-            textTotalDistance.setText(routeUpdate.getDistance());
+            textTotalDistance.setText(routeUpdate.getDistanceMeters());
         }
         if (textTotalTime != null) {
             textTotalTime.setText(routeUpdate.getDuration());
