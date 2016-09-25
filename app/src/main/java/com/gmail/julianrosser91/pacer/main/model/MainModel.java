@@ -3,28 +3,26 @@ package com.gmail.julianrosser91.pacer.main.model;
 import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.Pacer;
-import com.gmail.julianrosser91.pacer.data.database.RoutesDbHelper;
 import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
 import com.gmail.julianrosser91.pacer.data.model.Route;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
+import com.gmail.julianrosser91.pacer.main.MainInterfaces.RequiredPresenterOps;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUpdateListener {
 
-    private MainInterfaces.RequiredPresenterOps mPresenter;
+    private RequiredPresenterOps mPresenter;
     private Route mRoute;
-    private RoutesDbHelper dbHelper;
 
     private MainState mMainState = MainState.STOPPED;
 
-    public MainModel(MainInterfaces.RequiredPresenterOps presenter) {
+    public MainModel(RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
         mRoute = new Route(this);
-        dbHelper = Pacer.getDbHelper(mPresenter.getAppContext());
         checkTrackingStatus();
         EventBus.getDefault().register(this);
     }
@@ -53,12 +51,12 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     @Override
     public void resetRoute() {
         mRoute.reset();
-        dbHelper.deleteTable();
+        Pacer.getRoutesDatabase().deleteTable();
     }
 
     @Override
     public void dumpGpsCoordinateLog() {
-        dbHelper.printDatabaseData();
+        Pacer.getRoutesDatabase().printDatabaseData();
     }
 
     /**
@@ -75,7 +73,6 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     @Subscribe
     public void onLocationEvent(LocationEvent event) {
         mRoute.addLocation(event.getLocation());
-        dbHelper.addLocationToDatabase(event.getLocation());
         Toast.makeText(mPresenter.getAppContext(), event.getLocation().getLatitude() + " || " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
     }
 

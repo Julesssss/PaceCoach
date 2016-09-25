@@ -19,7 +19,6 @@ public final class RoutesContract {
         public static final String COLUMN_NAME_LAT = "latitude";
         public static final String COLUMN_NAME_LON = "longitude";
         public static final String COLUMN_NAME_TIME = "timestamp";
-
     }
 
 }
