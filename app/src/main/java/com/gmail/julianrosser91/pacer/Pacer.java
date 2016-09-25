@@ -1,6 +1,7 @@
 package com.gmail.julianrosser91.pacer;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.gmail.julianrosser91.pacer.data.database.RoutesDatabase;
 
@@ -13,8 +14,12 @@ public class Pacer extends Application {
         return mInstance;
     }
 
-    public static RoutesDatabase getRoutesDatabase() {
-        return mDatabase;
+    public static RoutesDatabase getRoutesDatabase(Context context) {
+        if (mDatabase == null) {
+            return new RoutesDatabase(context);
+        } else {
+            return mDatabase;
+        }
     }
 
     @Override
