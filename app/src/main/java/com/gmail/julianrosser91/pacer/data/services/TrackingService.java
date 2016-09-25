@@ -3,7 +3,6 @@ package com.gmail.julianrosser91.pacer.data.services;
 import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
 import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
 import com.gmail.julianrosser91.pacer.utils.Constants;
@@ -139,7 +139,9 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     private void handleUpdatedLocation(Location location) {
-        EventBus.getDefault().post(new LocationEvent(location)); // todo - Should replace with DB?
+        // Save to DB
+        Pacer.getRoutesDatabase().addLocationToDatabase(location);
+        EventBus.getDefault().post(new LocationEvent(location));
     }
 
     public void stopTrackingLocation() {
@@ -215,6 +217,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         fakeLocation.setLongitude(e);
         fakeLocation.setSpeed(new Random().nextFloat() * 15);
 
+        Pacer.getRoutesDatabase().addLocationToDatabase(fakeLocation);
         EventBus.getDefault().post(new LocationEvent(fakeLocation));
     }
 
