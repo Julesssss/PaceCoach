@@ -1,8 +1,9 @@
-package com.gmail.julianrosser91.pacer.model.services;
+package com.gmail.julianrosser91.pacer.data.services;
 
 import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,15 +12,15 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.gmail.julianrosser91.pacer.model.events.StopServiceEvent;
-import com.gmail.julianrosser91.pacer.model.events.LocationEvent;
-import com.gmail.julianrosser91.pacer.model.objects.Split;
+import com.gmail.julianrosser91.pacer.data.events.StopServiceEvent;
+import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
 import com.gmail.julianrosser91.pacer.utils.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -167,12 +168,14 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        // shared pref
-//        if (realData) {
+
+        boolean useFakeLocation = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getBoolean("fake_location_switch", false);
+        if (useFakeLocation) {
+            startReturningFakeLocationData();
+        } else {
             startLocationUpdates();
-//        } else {
-//            startReturningFakeLocationData();
-//        }
+        }
         Log.i(getClass().getSimpleName(), "onGoogleAPiConnected");
     }
 
@@ -192,6 +195,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     private Handler mHandler;
 
     private void startReturningFakeLocationData() {
+        isTracking = true;
         if (mHandler != null) {
             mHandler.removeCallbacks(fakePaceGenerater);
         } else {
@@ -201,14 +205,11 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     private void generateFakeLocation() {
-        int r = new Random().nextInt(20);
-        double v = new Random().nextDouble() * 10;
-
         Location fakeLocation = new Location("provider");
         fakeLocation.setTime(System.currentTimeMillis());
 
-        double d = (new Random().nextDouble() / 1000) + 55.555;
-        double e = (new Random().nextDouble() / 1000) + 4.444;
+        double d = (new Random().nextDouble() / 1000) + 51.510;
+        double e = (new Random().nextDouble() / 1000) + (-0.127);
 
         fakeLocation.setLatitude(d);
         fakeLocation.setLongitude(e);

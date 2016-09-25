@@ -1,4 +1,4 @@
-package com.gmail.julianrosser91.pacer.model.objects;
+package com.gmail.julianrosser91.pacer.data.model;
 
 import com.gmail.julianrosser91.pacer.utils.TimeUtils;
 

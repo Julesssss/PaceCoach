@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="fake_location_switch"
+        android:summary="@string/pref_description_location_source"
+        android:title="@string/pref_title_location_source" />
+
+</PreferenceScreen>

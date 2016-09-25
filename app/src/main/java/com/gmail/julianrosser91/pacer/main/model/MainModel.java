@@ -6,10 +6,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
-import com.gmail.julianrosser91.pacer.model.events.LocationEvent;
-import com.gmail.julianrosser91.pacer.model.objects.Route;
-import com.gmail.julianrosser91.pacer.model.objects.RouteUpdate;
-import com.gmail.julianrosser91.pacer.model.services.TrackingService;
+import com.gmail.julianrosser91.pacer.data.events.LocationEvent;
+import com.gmail.julianrosser91.pacer.data.model.Route;
+import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
+import com.gmail.julianrosser91.pacer.data.services.TrackingService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +36,6 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
     private void checkTrackingStatus() {
         if (TrackingService.getIsTracking()) {
             mMainState = MainState.TRACKING;
-
         }
     }
 
@@ -71,16 +70,16 @@ public class MainModel implements MainInterfaces.ProvidedModelOps, Route.RouteUp
      */
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
-        EventBus.getDefault().unregister(this);
         if (!isChangingConfiguration) {
             mPresenter = null;
+            EventBus.getDefault().unregister(this);
         }
     }
 
     @Subscribe
     public void onLocationEvent(LocationEvent event) {
         mRoute.addLocation(event.getLocation());
-        Toast.makeText(mPresenter.getAppContext(), "Location: " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(mPresenter.getAppContext(), event.getLocation().getLatitude() + " || " + event.getLocation().getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
