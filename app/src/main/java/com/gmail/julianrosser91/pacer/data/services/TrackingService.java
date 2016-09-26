@@ -174,7 +174,6 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
         boolean useFakeLocation = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .getBoolean("fake_location_switch", false);
         if (useFakeLocation) {

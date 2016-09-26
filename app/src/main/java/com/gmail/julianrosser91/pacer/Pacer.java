@@ -2,8 +2,11 @@ package com.gmail.julianrosser91.pacer;
 
 import android.app.Application;
 import android.content.Context;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.gmail.julianrosser91.pacer.data.database.RoutesDatabase;
+import com.gmail.julianrosser91.pacer.utils.PermissionHelper;
 
 public class Pacer extends Application {
 
@@ -27,5 +30,6 @@ public class Pacer extends Application {
         super.onCreate();
         mInstance = this;
         mDatabase = new RoutesDatabase(this);
+        PermissionHelper.initialiseDefaultPreferenceValues(this);
     }
 }
