@@ -20,6 +20,9 @@ import com.gmail.julianrosser91.pacer.main.presenter.MainPresenter;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.utils.StateMaintainer;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * VIEW layer of MVP pattern
  * MainActivity - View shows information about meters, time and pace
@@ -34,12 +37,14 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     // MPV Presenter. Only link to data level
     private MainPresenter mPresenter;
 
-    // Views
-    private TextView textTrackingState;
-    private TextView textLastSpeed;
-    private TextView textTotalDistance;
-    private TextView textTotalTime;
-    private TextView textTotalPace;
+    // Binding views
+    @BindView(R.id.text_tracking_state) private TextView textTrackingState;
+    @BindView(R.id.text_last_speed) private TextView textLastSpeed;
+    @BindView(R.id.text_total_distance) private TextView textTotalDistance;
+    @BindView(R.id.text_total_time) private TextView textTotalTime;
+    @BindView(R.id.text_total_pace) private TextView textTotalPace;
+    @BindView(R.id.button_start_tracking) private Button buttonStart;
+    @BindView(R.id.button_stop_tracking) private Button buttonStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +61,11 @@ public class MainActivity extends AppCompatActivity implements MainInterfaces.Re
     }
 
     private void setUpViews() {
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        textTrackingState = (TextView) findViewById(R.id.text_tracking_state);
-        textLastSpeed = (TextView) findViewById(R.id.text_last_speed);
-        textTotalDistance = (TextView) findViewById(R.id.text_total_distance);
-        textTotalTime = (TextView) findViewById(R.id.text_total_time);
-        textTotalPace = (TextView) findViewById(R.id.text_total_pace);
-
-        Button buttonStart = (Button) findViewById(R.id.button_start_tracking);
-        if (buttonStart != null) {
-            buttonStart.setOnClickListener(this);
-        }
-        Button buttonStop = (Button) findViewById(R.id.button_stop_tracking);
-        if (buttonStop != null) {
-            buttonStop.setOnClickListener(this);
-        }
+        buttonStart.setOnClickListener(this);
+        buttonStop.setOnClickListener(this);
     }
 
     /**
