@@ -76,8 +76,6 @@ public class MainInterfaces {
         void updateState(MainState tracking);
 
         MainState getState();
-
-        void resetRouteData();
     }
 
 }

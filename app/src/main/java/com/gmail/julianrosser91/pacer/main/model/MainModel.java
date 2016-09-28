@@ -2,9 +2,7 @@ package com.gmail.julianrosser91.pacer.main.model;
 
 import android.widget.Toast;
 
-import com.gmail.julianrosser91.pacer.Pacer;
 import com.gmail.julianrosser91.pacer.data.events.RouteUpdateEvent;
-import com.gmail.julianrosser91.pacer.data.model.Route;
 import com.gmail.julianrosser91.pacer.data.model.RouteUpdate;
 import com.gmail.julianrosser91.pacer.data.services.TrackingService;
 import com.gmail.julianrosser91.pacer.main.MainInterfaces;
@@ -17,6 +15,7 @@ public class MainModel implements MainInterfaces.ProvidedModelOps{
 
     public enum MainState {
         TRACKING,
+        PAUSED,
         STOPPED
     }
 
@@ -50,6 +49,11 @@ public class MainModel implements MainInterfaces.ProvidedModelOps{
 
     public MainState getState() {
         return mMainState;
+    }
+
+    @Override
+    public void resetRouteData() {
+        lastRouteUpdate = RouteUpdate.getEmptyRouteUpdate();
     }
 
     /**

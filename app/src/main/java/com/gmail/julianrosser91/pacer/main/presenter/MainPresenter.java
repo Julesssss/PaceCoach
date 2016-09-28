@@ -142,12 +142,12 @@ public class MainPresenter implements MainInterfaces.RequiredPresenterOps,
     public void resetRouteOptionSelected() {
         EventBus.getDefault().post(new StopServiceEvent());
         mModel.updateState(MainState.STOPPED);
+        mModel.resetRouteData();
         Pacer.getRoutesDatabase(getActivityContext()).deleteTable();
         updateViewState();
     }
 
     public void updateViewState() {
-        // Press back and re-open. Service still running. FInd instance? Or stop and re-start????
         if (mView != null && mView.get() != null && mModel != null) {
             mView.get().updateTrackingStatus(mModel.getState());
             mView.get().updateRouteInfo(mModel.getLastRouteUpdate());
